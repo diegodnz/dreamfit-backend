@@ -2,5 +2,8 @@ spring.datasource.url=jdbc:postgresql://localhost:5432/dreamFit?serverTimezone=U
 spring.datasource.username=
 spring.datasource.password=
 
+jwt.secret=SequenciaDeCaracteresParaAssinarToken
+jwt.expiration=6050000000
+
 spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect

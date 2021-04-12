@@ -12,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.dreamfitbackend.domain.usuario.enums.Role;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 @Entity
 @Table(name = "usuarios")
@@ -34,10 +36,11 @@ public class User implements Serializable {
 	
 	private String name;
 	
-	private Date bithDate;
+	private Date birthDate;
 	
 	private String gender;
 	
+	@JsonProperty(access = Access.WRITE_ONLY)
 	private String password;
 	
     private Integer role_user;
@@ -56,14 +59,14 @@ public class User implements Serializable {
 	
 	private Float bellyMeasurement;
 
-	public User(String cpf, String email, String name, Date bithDate, String gender, String password,
+	public User(String cpf, String email, String name, Date birthDate, String gender, String password,
 			Integer role_user, String phone, String profilePicture, Float weight, Float armMeasurement,
 			Float legMeasurement, Float hipMeasurement, Float bellyMeasurement) {
 		this.uuid = UUID.randomUUID().toString();
 		this.cpf = cpf;
 		this.email = email;
 		this.name = name;
-		this.bithDate = bithDate;
+		this.birthDate = birthDate;
 		this.gender = gender;
 		this.password = password;
 		this.role_user = role_user;
@@ -120,12 +123,12 @@ public class User implements Serializable {
 		this.name = name;
 	}
 
-	public Date getBithDate() {
-		return bithDate;
+	public Date getBirthDate() {
+		return birthDate;
 	}
 
-	public void setBithDate(Date bithDate) {
-		this.bithDate = bithDate;
+	public void setBirthDate(Date birthDate) {
+		this.birthDate = birthDate;
 	}
 
 	public String getGender() {

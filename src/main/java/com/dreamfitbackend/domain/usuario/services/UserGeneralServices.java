@@ -10,7 +10,11 @@ import org.springframework.stereotype.Service;
 
 import com.dreamfitbackend.configs.Mapper;
 import com.dreamfitbackend.configs.exceptions.FieldsException;
+import com.dreamfitbackend.configs.exceptions.MessageException;
 import com.dreamfitbackend.configs.exceptions.Problem.Field;
+import com.dreamfitbackend.configs.security.CredentialsInput;
+import com.dreamfitbackend.configs.security.CredentialsOutput;
+import com.dreamfitbackend.configs.security.JWTUtil;
 import com.dreamfitbackend.domain.usuario.User;
 import com.dreamfitbackend.domain.usuario.UserRepository;
 import com.dreamfitbackend.domain.usuario.models.UserInputRegister;
@@ -20,6 +24,9 @@ public class UserGeneralServices {
 	
 	@Autowired
 	private UserRepository userRepo;
+	
+	@Autowired
+	private JWTUtil jwtUtil;
 	
 	public void register(UserInputRegister userInputRegister) {
 		List<Field> errorFields = new ArrayList<>();
@@ -43,6 +50,22 @@ public class UserGeneralServices {
 		
 		newUser.setPassword(BCrypt.hashpw(newUser.getPassword(), BCrypt.gensalt()));
 		userRepo.save(newUser);
+	}
+	
+	public CredentialsOutput login(CredentialsInput credentialsInput) {
+		User user = userRepo.findByCpf(credentialsInput.getCpf());
+		if (user == null) {
+			throw new MessageException("Cpf inválido", HttpStatus.BAD_REQUEST);
+		}
+		
+		boolean matchPassword = BCrypt.checkpw(credentialsInput.getPassword(), user.getPassword());
+		if (!matchPassword) {
+			throw new MessageException("Senha errada", HttpStatus.BAD_REQUEST);
+		} else {
+			String token = jwtUtil.generateToken(user.getCpf(), user.getRole_user().getCod());
+			return new CredentialsOutput(token);			
+		}
+		
 	}
 
 }

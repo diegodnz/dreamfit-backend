@@ -28,7 +28,7 @@ public class UserInputRegister {
 	private String name;
 	
 	@NotNull
-	private Date bithDate;
+	private Date birthDate;
 	
 	@NotBlank
 	@Size(max = 255)
@@ -84,12 +84,12 @@ public class UserInputRegister {
 		this.name = name;
 	}
 
-	public Date getBithDate() {
-		return bithDate;
+	public Date getBirthDate() {
+		return birthDate;
 	}
 
-	public void setBithDate(Date bithDate) {
-		this.bithDate = bithDate;
+	public void setBirthDate(Date bithDate) {
+		this.birthDate = bithDate;
 	}
 
 	public String getGender() {

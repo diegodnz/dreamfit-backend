@@ -6,8 +6,8 @@ import com.dreamfitbackend.configs.exceptions.MessageException;
 
 public enum Role {
 	ADMIN(20, "ADMIN"),
-	PROFESSOR(40, "Professor"),
-	ALUNO(60, "Aluno");
+	TEACHER(40, "Teacher"),
+	STUDENT(60, "Student");
 
 	private int cod;
 	private String descricao;

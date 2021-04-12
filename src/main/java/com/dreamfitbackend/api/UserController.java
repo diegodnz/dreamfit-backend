@@ -10,6 +10,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dreamfitbackend.configs.exceptions.MessageException;
+import com.dreamfitbackend.configs.generalDtos.StatusMessage;
 import com.dreamfitbackend.configs.security.CredentialsInput;
 import com.dreamfitbackend.configs.security.CredentialsOutput;
 import com.dreamfitbackend.configs.security.JWTUtil;
@@ -28,7 +30,7 @@ import com.dreamfitbackend.domain.usuario.services.UserGeneralServices;
 
 @RestController
 @RequestMapping("/users")
-public class UsuarioController {
+public class UserController {
 	
 	@Autowired
 	private UserRepository userRepo;
@@ -39,15 +41,11 @@ public class UsuarioController {
 	@Autowired
 	private UserGeneralServices userGeneralServices;
 	
-	private final List<Integer> ADM = Arrays.asList(Role.ADMIN.getCod());
-	
-	private final List<Integer> ADM_PROF = Arrays.asList(Role.ADMIN.getCod(), Role.PROFESSOR.getCod());
-	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public void register(@Valid @RequestBody UserInputRegister userInputRegister, HttpServletRequest req) {
-		if (!jwtUtil.verifyToken(userRepo, req, ADM)) {
-			throw new MessageException("Sem autorização", HttpStatus.UNAUTHORIZED);
+		if (jwtUtil.verifyToken(userRepo, req, Permissions.ADM) == null) {
+			throw new MessageException("Sem permissão", HttpStatus.UNAUTHORIZED);
 		}
 		userGeneralServices.register(userInputRegister);
 	}
@@ -61,9 +59,10 @@ public class UsuarioController {
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
 	public List<User> list(HttpServletRequest req) {
-		if (!jwtUtil.verifyToken(userRepo, req, ADM_PROF)) {
-			throw new MessageException("Sem autorização", HttpStatus.UNAUTHORIZED);
+		if (jwtUtil.verifyToken(userRepo, req, Permissions.ADM_PROF) == null) {
+			throw new MessageException("Sem permissão", HttpStatus.UNAUTHORIZED);
 		}
 		return userRepo.findAll();
 	}
+	
 }

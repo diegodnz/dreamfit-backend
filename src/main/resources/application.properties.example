@@ -1,4 +1,4 @@
-spring.datasource.url=jdbc:postgresql://localhost:5432/dreamFit?serverTimezone=UTC
+spring.datasource.url=jdbc:postgresql://localhost:5432/dreamFit?serverTimezone=UTC-3
 spring.datasource.username=
 spring.datasource.password=
 

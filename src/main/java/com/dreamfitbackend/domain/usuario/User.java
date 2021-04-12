@@ -2,6 +2,7 @@ package com.dreamfitbackend.domain.usuario;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -9,14 +10,16 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import com.dreamfitbackend.domain.gymclass.Class;
 import com.dreamfitbackend.domain.usuario.enums.Role;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 @Entity
-@Table(name = "usuarios")
+@Table(name = "users")
 public class User implements Serializable {	
 	
 	private static final long serialVersionUID = 1L;
@@ -33,6 +36,12 @@ public class User implements Serializable {
 	
 	@Column(unique = true)	
 	private String email;
+	
+	@ManyToMany(mappedBy = "teachers")
+	private Set<Class> classesTeacher;
+	
+	@ManyToMany(mappedBy = "students")
+	private Set<Class> classesStudent;
 	
 	private String name;
 	
@@ -79,6 +88,10 @@ public class User implements Serializable {
 		this.bellyMeasurement = bellyMeasurement;
 	}
 
+	public void addClassStudent(Class gymClass) {
+		this.classesStudent.add(gymClass);
+	}
+	
 	public User() {
 		this.uuid = UUID.randomUUID().toString();
 	}

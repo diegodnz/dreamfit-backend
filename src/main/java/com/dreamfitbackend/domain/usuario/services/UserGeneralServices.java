@@ -1,5 +1,10 @@
 package com.dreamfitbackend.domain.usuario.services;
 
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,9 +17,12 @@ import com.dreamfitbackend.configs.Mapper;
 import com.dreamfitbackend.configs.exceptions.FieldsException;
 import com.dreamfitbackend.configs.exceptions.MessageException;
 import com.dreamfitbackend.configs.exceptions.Problem.Field;
+import com.dreamfitbackend.configs.generalDtos.StatusMessage;
 import com.dreamfitbackend.configs.security.CredentialsInput;
 import com.dreamfitbackend.configs.security.CredentialsOutput;
 import com.dreamfitbackend.configs.security.JWTUtil;
+import com.dreamfitbackend.domain.gymclass.Class;
+import com.dreamfitbackend.domain.gymclass.ClassRepository;
 import com.dreamfitbackend.domain.usuario.User;
 import com.dreamfitbackend.domain.usuario.UserRepository;
 import com.dreamfitbackend.domain.usuario.models.UserInputRegister;
@@ -24,6 +32,9 @@ public class UserGeneralServices {
 	
 	@Autowired
 	private UserRepository userRepo;
+	
+	@Autowired
+	private ClassRepository classRepo;
 	
 	@Autowired
 	private JWTUtil jwtUtil;
@@ -65,7 +76,6 @@ public class UserGeneralServices {
 			String token = jwtUtil.generateToken(user.getCpf(), user.getRole_user().getCod());
 			return new CredentialsOutput(token);			
 		}
-		
 	}
 
 }

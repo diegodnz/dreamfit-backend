@@ -19,9 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dreamfitbackend.configs.exceptions.MessageException;
 import com.dreamfitbackend.configs.generalDtos.StatusMessage;
+import com.dreamfitbackend.configs.security.Auth;
 import com.dreamfitbackend.configs.security.CredentialsInput;
 import com.dreamfitbackend.configs.security.CredentialsOutput;
 import com.dreamfitbackend.configs.security.JWTUtil;
+import com.dreamfitbackend.configs.security.Permissions;
 import com.dreamfitbackend.domain.usuario.User;
 import com.dreamfitbackend.domain.usuario.UserRepository;
 import com.dreamfitbackend.domain.usuario.enums.Role;
@@ -44,9 +46,7 @@ public class UserController {
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public void register(@Valid @RequestBody UserInputRegister userInputRegister, HttpServletRequest req) {
-		if (jwtUtil.verifyToken(userRepo, req, Permissions.ADM) == null) {
-			throw new MessageException("Sem permissão", HttpStatus.UNAUTHORIZED);
-		}
+		Auth.auth(userRepo, req, Permissions.ADM,  "Sem permissão", HttpStatus.UNAUTHORIZED);		
 		userGeneralServices.register(userInputRegister);
 	}
 	
@@ -59,9 +59,7 @@ public class UserController {
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
 	public List<User> list(HttpServletRequest req) {
-		if (jwtUtil.verifyToken(userRepo, req, Permissions.ADM_PROF) == null) {
-			throw new MessageException("Sem permissão", HttpStatus.UNAUTHORIZED);
-		}
+		Auth.auth(userRepo, req, Permissions.ADM_PROF, "Sem permissão", HttpStatus.UNAUTHORIZED);		
 		return userRepo.findAll();
 	}
 	

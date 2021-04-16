@@ -14,6 +14,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import com.dreamfitbackend.configs.exceptions.MessageException;
 import com.dreamfitbackend.domain.usuario.User;
 
 @Entity
@@ -55,8 +56,9 @@ public class Class implements Serializable {
 		this.totalVacancies = totalVacancies;
 	}
 	
-	public void addStudent(User user) {
+	public void addStudent(User user) {		
 		this.students.add(user);
+		this.filledVacancies += 1;
 	}
 
 	public Long getId() {

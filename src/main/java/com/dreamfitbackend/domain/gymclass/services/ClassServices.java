@@ -14,6 +14,7 @@ import com.dreamfitbackend.configs.exceptions.MessageException;
 import com.dreamfitbackend.configs.generalDtos.StatusMessage;
 import com.dreamfitbackend.domain.gymclass.Class;
 import com.dreamfitbackend.domain.gymclass.ClassRepository;
+import com.dreamfitbackend.domain.gymclass.models.ClassInputRegisterMany;
 import com.dreamfitbackend.domain.usuario.User;
 import com.dreamfitbackend.domain.usuario.UserRepository;
 
@@ -26,7 +27,11 @@ public class ClassServices {
 	@Autowired
 	private ClassRepository classRepo;
 	
-	public StatusMessage schedule(Long id, String userCpf) {
+	public StatusMessage registerClasses(ClassInputRegisterMany classesInput) {
+		 return null; // TODO implementar
+	}
+	
+	public StatusMessage makeAppointment(Long id, String userCpf) {
 		Class gymClass = classRepo.getById(id);
 		
 		if (gymClass == null) {

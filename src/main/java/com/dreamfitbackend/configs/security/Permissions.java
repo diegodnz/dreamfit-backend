@@ -1,4 +1,4 @@
-package com.dreamfitbackend.api;
+package com.dreamfitbackend.configs.security;
 
 import java.util.Arrays;
 import java.util.List;

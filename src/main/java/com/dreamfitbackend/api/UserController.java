@@ -1,7 +1,5 @@
 package com.dreamfitbackend.api;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dreamfitbackend.configs.exceptions.MessageException;
 import com.dreamfitbackend.configs.generalDtos.StatusMessage;
 import com.dreamfitbackend.configs.security.Auth;
 import com.dreamfitbackend.configs.security.CredentialsInput;
@@ -26,7 +23,8 @@ import com.dreamfitbackend.configs.security.JWTUtil;
 import com.dreamfitbackend.configs.security.Permissions;
 import com.dreamfitbackend.domain.usuario.User;
 import com.dreamfitbackend.domain.usuario.UserRepository;
-import com.dreamfitbackend.domain.usuario.enums.Role;
+import com.dreamfitbackend.domain.usuario.models.EmailRecovery;
+import com.dreamfitbackend.domain.usuario.models.PasswordModify;
 import com.dreamfitbackend.domain.usuario.models.UserInputRegister;
 import com.dreamfitbackend.domain.usuario.services.UserGeneralServices;
 
@@ -50,6 +48,22 @@ public class UserController {
 		userGeneralServices.register(userInputRegister);
 	}
 	
+	@PostMapping("/recovery-token/{token}")
+	@ResponseStatus(HttpStatus.OK)
+	public StatusMessage tokenRecovery(@PathVariable String token, @Valid @RequestBody PasswordModify newPassword) {
+		return userGeneralServices.resetPassword(token, newPassword.getNewPassword(), newPassword.getConfirmNewPassword());
+	}
+	
+	@PostMapping("/recovery-password")
+	@ResponseStatus(HttpStatus.OK)
+	public StatusMessage sendMail(@Valid @RequestBody EmailRecovery emailRecovery) {
+		return userGeneralServices.sendPasswordToken(emailRecovery.getEmail());
+	}
+//	
+//	@PutMapping("/{uuid}")
+//	@ResponseStatus(HttpStatus.OK)
+//	public UserOutputComplete modify(@Valid @RequestBody UserInputM)
+//	
 	@PostMapping("/login")
 	@ResponseStatus(HttpStatus.OK)
 	public CredentialsOutput login(@Valid @RequestBody CredentialsInput credentialsInput) {

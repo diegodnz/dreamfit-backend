@@ -2,6 +2,8 @@ package com.dreamfitbackend.domain.usuario;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Set;
 import java.util.UUID;
 
@@ -58,19 +60,14 @@ public class User implements Serializable {
 	
 	private String profilePicture;
 	
-	private Float weight;
-	
-	private Float armMeasurement;
-	
-	private Float legMeasurement;
-	
-	private Float hipMeasurement;
-	
-	private Float bellyMeasurement;
+	private String tokenReset;
 
+	public User() {
+		this.uuid = UUID.randomUUID().toString();
+	}
+	
 	public User(String cpf, String email, String name, Date birthDate, String gender, String password,
-			Integer role_user, String phone, String profilePicture, Float weight, Float armMeasurement,
-			Float legMeasurement, Float hipMeasurement, Float bellyMeasurement) {
+			Integer role_user, String phone, String profilePicture) {
 		this.uuid = UUID.randomUUID().toString();
 		this.cpf = cpf;
 		this.email = email;
@@ -81,19 +78,10 @@ public class User implements Serializable {
 		this.role_user = role_user;
 		this.phone = phone;
 		this.profilePicture = profilePicture;
-		this.weight = weight;
-		this.armMeasurement = armMeasurement;
-		this.legMeasurement = legMeasurement;
-		this.hipMeasurement = hipMeasurement;
-		this.bellyMeasurement = bellyMeasurement;
 	}
 
 	public void addClassStudent(Class gymClass) {
 		this.classesStudent.add(gymClass);
-	}
-	
-	public User() {
-		this.uuid = UUID.randomUUID().toString();
 	}
 
 	public Long getId() {
@@ -184,44 +172,12 @@ public class User implements Serializable {
 		this.profilePicture = profilePicture;
 	}
 
-	public Float getWeight() {
-		return weight;
+	public String getTokenReset() {
+		return tokenReset;
 	}
 
-	public void setWeight(Float weight) {
-		this.weight = weight;
-	}
-
-	public Float getArmMeasurement() {
-		return armMeasurement;
-	}
-
-	public void setArmMeasurement(Float armMeasurement) {
-		this.armMeasurement = armMeasurement;
-	}
-
-	public Float getLegMeasurement() {
-		return legMeasurement;
-	}
-
-	public void setLegMeasurement(Float legMeasurement) {
-		this.legMeasurement = legMeasurement;
-	}
-
-	public Float getHipMeasurement() {
-		return hipMeasurement;
-	}
-
-	public void setHipMeasurement(Float hipMeasurement) {
-		this.hipMeasurement = hipMeasurement;
-	}
-
-	public Float getBellyMeasurement() {
-		return bellyMeasurement;
-	}
-
-	public void setBellyMeasurement(Float bellyMeasurement) {
-		this.bellyMeasurement = bellyMeasurement;
+	public void setTokenReset(String tokenReset) {
+		this.tokenReset = tokenReset;
 	}
 
 	@Override

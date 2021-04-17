@@ -15,6 +15,7 @@ import com.dreamfitbackend.domain.usuario.User;
 import com.dreamfitbackend.domain.usuario.UserRepository;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.InvalidClaimException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
@@ -36,6 +37,14 @@ public class JWTUtil {
 				.compact();
 	}
 	
+	public String generateToken(String cpf, Long expirationTime) {
+		return Jwts.builder()
+				.setSubject(cpf)		
+				.setExpiration(new Date(System.currentTimeMillis() + expirationTime))
+				.signWith(SignatureAlgorithm.HS512, secret.getBytes())
+				.compact();
+	}
+	
 	public String verifyToken(UserRepository userRepo ,HttpServletRequest req, List<Integer> roles) {
 		try {
 			String token = (String)req.getHeader("Authorization").substring(7);			
@@ -45,15 +54,14 @@ public class JWTUtil {
 		}
 	}
 	
-	public String validToken(UserRepository userRepo, String token, List<Integer> roles) {
+	public String validToken(UserRepository userRepo, String token, List<Integer> roles) throws InvalidClaimException {
 		Claims claims = getClaims(token);
 		if (claims != null) {
 			String cpf = claims.getSubject();
 			User user = userRepo.findByCpf(cpf);
 			Integer roleToken = claims.get("role", Integer.class);
 			Date expirationDate = claims.getExpiration();
-			Date now = new Date(System.currentTimeMillis());
-			System.out.println(roles.contains(roleToken) + " " + roleToken + " " + roles);
+			Date now = new Date(System.currentTimeMillis());			
 			if (roles.contains(roleToken) && user != null && expirationDate != null && now.before(expirationDate)) {
 				return cpf;
 			}

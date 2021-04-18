@@ -24,6 +24,9 @@ public class JWTUtil {
 	
 	@Value("${jwt.secret}")
 	private String secret;
+	
+	@Value("${jwt.passwordSecret}")
+	private String passwordSecret;
 
 	@Value("${jwt.expiration}")
 	private Long expiration;
@@ -37,25 +40,27 @@ public class JWTUtil {
 				.compact();
 	}
 	
-	public String generateToken(String cpf, Long expirationTime) {
+	public String generatePasswordToken(String cpf, Long expirationTime) {
 		return Jwts.builder()
 				.setSubject(cpf)		
 				.setExpiration(new Date(System.currentTimeMillis() + expirationTime))
-				.signWith(SignatureAlgorithm.HS512, secret.getBytes())
+				.signWith(SignatureAlgorithm.HS512, passwordSecret.getBytes())
 				.compact();
 	}
 	
 	public String verifyToken(UserRepository userRepo ,HttpServletRequest req, List<Integer> roles) {
 		try {
-			String token = (String)req.getHeader("Authorization").substring(7);			
+			String token = (String)req.getHeader("Authorization").substring(7);	
 			return validToken(userRepo, token, roles);
 		} catch (Exception e) {			
 			return null;
 		}
 	}
 	
-	public String validToken(UserRepository userRepo, String token, List<Integer> roles) throws InvalidClaimException {
+	public String validToken(UserRepository userRepo, String token, List<Integer> roles) {
+		System.out.println(token);
 		Claims claims = getClaims(token);
+		System.out.println(claims);
 		if (claims != null) {
 			String cpf = claims.getSubject();
 			User user = userRepo.findByCpf(cpf);
@@ -86,9 +91,11 @@ public class JWTUtil {
 	
 	public Claims getClaims(String token) {
 		try {
+			System.out.println(secret);
 			return Jwts.parser().setSigningKey(secret.getBytes()).parseClaimsJws(token).getBody();
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 	}

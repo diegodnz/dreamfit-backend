@@ -33,11 +33,14 @@ public class ClassController {
 	@Autowired
 	private ClassServices classServices;
 	
+	@Autowired
+	private Auth authorization;
+	
 	// ** Criar aulas **
 	@PostMapping("/schedule")
 	@ResponseStatus(HttpStatus.CREATED)
 	public StatusMessage registerClasses(HttpServletRequest req, @Valid @RequestBody ClassInputRegisterMany classesInput) {
-		Auth.auth(userRepo, req, Permissions.ADM_PROF, "Sem permissão", HttpStatus.UNAUTHORIZED);
+		authorization.auth(userRepo, req, Permissions.ADM_PROF, "Sem permissão", HttpStatus.UNAUTHORIZED);
 		return classServices.registerClasses(classesInput);
 	}
 	
@@ -45,7 +48,7 @@ public class ClassController {
 	@PostMapping("/schedule/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public StatusMessage makeAppointment(HttpServletRequest req, @PathVariable Long id) {
-		String userCpf = Auth.auth(userRepo, req, Permissions.PROF_STUDENT, "Somente usuários da academia podem marcar aulas", HttpStatus.FORBIDDEN);		
+		String userCpf = authorization.auth(userRepo, req, Permissions.PROF_STUDENT, "Somente usuários da academia podem marcar aulas", HttpStatus.FORBIDDEN);		
 		return classServices.makeAppointment(id, userCpf);
 	}
 

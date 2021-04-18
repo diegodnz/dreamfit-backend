@@ -29,7 +29,9 @@ import com.dreamfitbackend.configs.security.JWTUtil;
 import com.dreamfitbackend.domain.gymclass.ClassRepository;
 import com.dreamfitbackend.domain.usuario.User;
 import com.dreamfitbackend.domain.usuario.UserRepository;
+import com.dreamfitbackend.domain.usuario.enums.Role;
 import com.dreamfitbackend.domain.usuario.models.UserInputRegister;
+import com.dreamfitbackend.domain.usuario.models.UserOutputList;
 
 import io.jsonwebtoken.Claims;
 
@@ -47,6 +49,15 @@ public class UserGeneralServices {
 	
 	@Autowired
 	private JWTUtil jwtUtil;
+	
+	public List<UserOutputList> listByRole(Role role) {
+		List<UserOutputList> listOutput = new ArrayList<>();
+		List<User> listUser = userRepo.findAllByRole(role.getCod());
+		for (User user : listUser) {
+			listOutput.add(new UserOutputList(user.getName(), user.getEmail(), user.getCpf()));
+		}
+		return listOutput;
+	}
 	
 	public void register(UserInputRegister userInputRegister) {
 		List<Field> errorFields = new ArrayList<>();
@@ -80,7 +91,7 @@ public class UserGeneralServices {
 		
 		boolean matchPassword = BCrypt.checkpw(credentialsInput.getPassword(), user.getPassword());
 		if (!matchPassword) {
-			throw new MessageException("Senha errada", HttpStatus.BAD_REQUEST);
+			throw new MessageException("Senha incorreta", HttpStatus.BAD_REQUEST);
 		} else {
 			String token = jwtUtil.generateToken(user.getCpf(), user.getRole_user().getCod());
 			return new CredentialsOutput(token);			
@@ -91,7 +102,7 @@ public class UserGeneralServices {
       	User user = userRepo.findByEmail(email);
 		if (user != null) {					
 			try {
-    	        String token = jwtUtil.generateToken(user.getCpf(), 1800000L); // 30 minutos
+    	        String token = jwtUtil.generatePasswordToken(user.getCpf(), 1800000L); // 30 minutos
 				
 				//E-mail
 				MimeMessage mail = mailSender.createMimeMessage();

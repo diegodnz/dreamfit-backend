@@ -3,6 +3,7 @@ spring.datasource.username=
 spring.datasource.password=
 
 jwt.secret=SequenciaDeCaracteresParaAssinarToken
+jwt.passwordSecret=SequenciaDeCaracteresParaAsisinarTokenResetSenha
 jwt.expiration=6050000000
 
 spring.jpa.show-sql=true

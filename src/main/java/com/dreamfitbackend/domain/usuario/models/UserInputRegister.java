@@ -60,7 +60,7 @@ public class UserInputRegister {
 	public UserInputRegister() {}
 
 	public String getCpf() {		
-		return cpf.strip();
+		return cpf.trim();
 	}
 
 	public void setCpf(String cpf) {
@@ -68,7 +68,7 @@ public class UserInputRegister {
 	}
 
 	public String getEmail() {
-		return email.strip();
+		return email.trim();
 	}
 
 	public void setEmail(String email) {
@@ -76,7 +76,7 @@ public class UserInputRegister {
 	}
 
 	public String getName() {
-		return name.strip();
+		return name.trim();
 	}
 
 	public void setName(String name) {
@@ -92,7 +92,7 @@ public class UserInputRegister {
 	}
 
 	public String getGender() {
-		return gender.strip();
+		return gender.trim();
 	}
 
 	public void setGender(String gender) {
@@ -100,7 +100,7 @@ public class UserInputRegister {
 	}
 
 	public String getPassword() {
-		return password.strip();
+		return password.trim();
 	}
 
 	public void setPassword(String password) {
@@ -117,7 +117,7 @@ public class UserInputRegister {
 	}
 
 	public String getPhone() {
-		return phone.strip();
+		return phone.trim();
 	}
 
 	public void setPhone(String phone) {
@@ -125,7 +125,7 @@ public class UserInputRegister {
 	}
 
 	public String getProfilePicture() {
-		return profilePicture.strip();
+		return profilePicture.trim();
 	}
 
 	public void setProfilePicture(String profilePicture) {

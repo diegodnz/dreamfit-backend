@@ -10,30 +10,33 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dreamfitbackend.configs.exceptions.MessageException;
+import com.dreamfitbackend.configs.exceptions.Problem;
 import com.dreamfitbackend.configs.generalDtos.StatusMessage;
 import com.dreamfitbackend.configs.security.Auth;
 import com.dreamfitbackend.configs.security.CredentialsInput;
 import com.dreamfitbackend.configs.security.CredentialsOutput;
 import com.dreamfitbackend.configs.security.JWTUtil;
 import com.dreamfitbackend.configs.security.Permissions;
-import com.dreamfitbackend.domain.usuario.User;
 import com.dreamfitbackend.domain.usuario.UserRepository;
 import com.dreamfitbackend.domain.usuario.enums.Role;
 import com.dreamfitbackend.domain.usuario.models.EmailRecovery;
 import com.dreamfitbackend.domain.usuario.models.PasswordModify;
-import com.dreamfitbackend.domain.usuario.models.UserInputModify;
 import com.dreamfitbackend.domain.usuario.models.UserInputRegister;
 import com.dreamfitbackend.domain.usuario.models.UserInputSearch;
-import com.dreamfitbackend.domain.usuario.models.UserOutputComplete;
 import com.dreamfitbackend.domain.usuario.models.UserOutputList;
 import com.dreamfitbackend.domain.usuario.services.UserGeneralServices;
+
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
 
 @RestController
 @RequestMapping("/users")
@@ -51,6 +54,14 @@ public class UserController {
 	@Autowired
 	private Auth authorization;
 	
+	@ApiOperation(value = "Cadastrar usuário", notes = "Esta operação permite que a academia cadastre um novo aluno ou professor.", authorizations = {
+			@Authorization(value = "JWT") })
+	@ApiResponses(value = {
+			@ApiResponse(code = 201, message = "O usuário foi cadastrado com sucesso. Sem retorno"),
+			@ApiResponse(code = 400, response = Problem.class, message = "Caso haja campos preechidos incorretamente, serão retornadas mensagens de erro para cada campo incorreto"),
+			@ApiResponse(code = 401, response = StatusMessage.class, message = "Retorna o status 401 e a mensagem 'Sem Permissão'"),			
+			@ApiResponse(code = 500, message = "Houve algum erro no processamento da requisição") })	
+	@ApiImplicitParam(name = "Authorization", value = "Access Token", required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public void register(@Valid @RequestBody UserInputRegister userInputRegister, HttpServletRequest req) {

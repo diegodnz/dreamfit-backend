@@ -5,7 +5,10 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 
 import com.dreamfitbackend.configs.exceptions.Problem.Field;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@JsonIgnoreProperties(allowGetters = false, allowSetters = false)
 public class FieldsException extends RuntimeException {
 	/**
 	 * 
@@ -22,6 +25,7 @@ public class FieldsException extends RuntimeException {
 		this.fields = fields;
 	}
 
+	@JsonIgnore(value = false)
 	public HttpStatus getStatus() {
 		return status;
 	}
@@ -30,6 +34,7 @@ public class FieldsException extends RuntimeException {
 		this.status = status;
 	}
 
+	@JsonIgnore(value = false)
 	public List<Field> getFields() {
 		return fields;
 	}

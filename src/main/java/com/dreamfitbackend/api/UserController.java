@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,6 +30,7 @@ import com.dreamfitbackend.domain.usuario.models.EmailRecovery;
 import com.dreamfitbackend.domain.usuario.models.PasswordModify;
 import com.dreamfitbackend.domain.usuario.models.UserInputModify;
 import com.dreamfitbackend.domain.usuario.models.UserInputRegister;
+import com.dreamfitbackend.domain.usuario.models.UserInputSearch;
 import com.dreamfitbackend.domain.usuario.models.UserOutputComplete;
 import com.dreamfitbackend.domain.usuario.models.UserOutputList;
 import com.dreamfitbackend.domain.usuario.services.UserGeneralServices;
@@ -76,16 +78,16 @@ public class UserController {
 	
 	@GetMapping("/students")
 	@ResponseStatus(HttpStatus.OK)
-	public List<UserOutputList> listStudents(HttpServletRequest req) {
+	public List<UserOutputList> listStudents(HttpServletRequest req, @RequestBody(required = false) UserInputSearch search) {	
 		authorization.auth(userRepo, req, Permissions.ADM_PROF, "Sem permissão", HttpStatus.UNAUTHORIZED);		
-		return userGeneralServices.listByRole(Role.STUDENT);
+		return userGeneralServices.listByRole(Role.STUDENT, search);
 	}
 	
 	@GetMapping("/teachers")
 	@ResponseStatus(HttpStatus.OK)
-	public List<UserOutputList> listTeachers(HttpServletRequest req) {
+	public List<UserOutputList> listTeachers(HttpServletRequest req, @RequestBody(required = false) UserInputSearch search) {											
 		authorization.auth(userRepo, req, Permissions.ADM, "Sem permissão", HttpStatus.UNAUTHORIZED);		
-		return userGeneralServices.listByRole(Role.TEACHER);
+		return userGeneralServices.listByRole(Role.TEACHER, search);
 	}
 	
 }

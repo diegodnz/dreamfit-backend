@@ -1,6 +1,5 @@
 package com.dreamfitbackend.domain.usuario;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -21,6 +20,15 @@ public interface UserRepository extends JpaRepository<User, Long>{
 	
 	@Query(value = "SELECT * FROM users WHERE role_user = :role", nativeQuery = true)
 	List<User> findAllByRole(@Param("role") Integer role);
+	
+	@Query(value = "SELECT * FROM users WHERE role_user = :role AND name ilike '%'||:name||'%'", nativeQuery = true)
+	List<User> findAllByNameAndRole(@Param("name") String name, @Param("role") Integer role);
+	
+	@Query(value = "SELECT * FROM users WHERE role_user = :role AND cpf = :cpf", nativeQuery = true)
+	List<User> findAllByCpfAndRole(@Param("cpf") String cpf, @Param("role") Integer role);
+	
+	@Query(value = "SELECT * FROM users WHERE role_user = :role AND email = :email", nativeQuery = true)
+	List<User> findAllByEmailAndRole(@Param("email") String email, @Param("role") Integer role);
 	
 	@Query(value = "UPDATE users SET token_reset = :token WHERE email = :email", nativeQuery = true)
 	@Modifying@Transactional

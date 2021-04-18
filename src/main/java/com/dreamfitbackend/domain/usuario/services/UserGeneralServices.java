@@ -1,18 +1,13 @@
 package com.dreamfitbackend.domain.usuario.services;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -31,6 +26,7 @@ import com.dreamfitbackend.domain.usuario.User;
 import com.dreamfitbackend.domain.usuario.UserRepository;
 import com.dreamfitbackend.domain.usuario.enums.Role;
 import com.dreamfitbackend.domain.usuario.models.UserInputRegister;
+import com.dreamfitbackend.domain.usuario.models.UserInputSearch;
 import com.dreamfitbackend.domain.usuario.models.UserOutputList;
 
 import io.jsonwebtoken.Claims;
@@ -50,9 +46,22 @@ public class UserGeneralServices {
 	@Autowired
 	private JWTUtil jwtUtil;
 	
-	public List<UserOutputList> listByRole(Role role) {
+	public List<UserOutputList> listByRole(Role role, UserInputSearch search) {
 		List<UserOutputList> listOutput = new ArrayList<>();
-		List<User> listUser = userRepo.findAllByRole(role.getCod());
+		List<User> listUser = new ArrayList<>();		
+		if (search == null || search.getType() == null || search.getSearch() == null) {
+			listUser = userRepo.findAllByRole(role.getCod());
+		} else {		
+			if (search.getType().equals("Nome")) {
+				listUser = userRepo.findAllByNameAndRole(search.getSearch(), role.getCod());
+			} else if (search.getType().equals("Cpf")) {
+				listUser = userRepo.findAllByCpfAndRole(search.getSearch(), role.getCod());
+			} else if (search.getType().equals("Email")) {
+				listUser = userRepo.findAllByEmailAndRole(search.getSearch(), role.getCod());
+			} else {
+				throw new MessageException("Tipo de busca inválida (Só são permitidas buscas por Nome, Cpf ou Email)", HttpStatus.BAD_REQUEST);
+			}
+		}
 		for (User user : listUser) {
 			listOutput.add(new UserOutputList(user.getName(), user.getEmail(), user.getCpf()));
 		}

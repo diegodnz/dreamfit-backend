@@ -58,9 +58,7 @@ public class JWTUtil {
 	}
 	
 	public String validToken(UserRepository userRepo, String token, List<Integer> roles) {
-		System.out.println(token);
 		Claims claims = getClaims(token);
-		System.out.println(claims);
 		if (claims != null) {
 			String cpf = claims.getSubject();
 			User user = userRepo.findByCpf(cpf);
@@ -90,8 +88,7 @@ public class JWTUtil {
 	}
 	
 	public Claims getClaims(String token) {
-		try {
-			System.out.println(secret);
+		try {			
 			return Jwts.parser().setSigningKey(secret.getBytes()).parseClaimsJws(token).getBody();
 		}
 		catch (Exception e) {

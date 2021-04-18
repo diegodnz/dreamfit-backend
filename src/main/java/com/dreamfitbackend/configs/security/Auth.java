@@ -17,8 +17,6 @@ public class Auth {
 	@Autowired
 	private JWTUtil jwtUtil;
 	
-	
-	
 	public String auth(UserRepository userRepo, HttpServletRequest req, List<Integer> permissions, String message, HttpStatus error) {
 		String userCpf = jwtUtil.verifyToken(userRepo, req, permissions);
 		if (userCpf == null) {

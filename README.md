@@ -1,9 +1,9 @@
 # Dreamfit API
-## Projeto: https://github.com/diegodnz/projeto-eng-software
+### Projeto: https://github.com/diegodnz/projeto-eng-software
 
 -----------------------------
-## Plano inicial das rotas da API: https://pastebin.com/7Pupd0em
-## Rotas atuais da API (Swagger): https://dreamfit-api.herokuapp.com/swagger-ui.html
+### Plano inicial das rotas da API: https://pastebin.com/7Pupd0em
+### Rotas atuais da API (Swagger): https://dreamfit-api.herokuapp.com/swagger-ui.html
 -----------------------------
 
 #### Requisitos e utilitários

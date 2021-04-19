@@ -122,13 +122,12 @@ public class UserGeneralServices {
 	            mailSender.send(mail);	
 	            userRepo.setResetToken(email, token);
 				return new StatusMessage(HttpStatus.ACCEPTED.value(), "E-mail enviado com sucesso");
-            } catch (Exception e) {
-            	e.printStackTrace();        
-                throw new MessageException("Erro ao enviar e-mail, tente novamente", HttpStatus.BAD_REQUEST);
+            } catch (Exception e) {            	       
+            	return new StatusMessage(HttpStatus.BAD_REQUEST.value(), "Erro ao enviar e-mail, tente novamente");
             }
 			
 		} else {			
-			throw new MessageException("Email não cadastrado no sistema", HttpStatus.BAD_REQUEST);
+			return new StatusMessage(HttpStatus.BAD_REQUEST.value(), "Email não cadastrado no sistema");
 		}
             
 

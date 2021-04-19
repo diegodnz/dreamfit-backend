@@ -54,14 +54,18 @@ public class UserController {
 	@Autowired
 	private Auth authorization;
 	
+	
+	// ** Cadastrar Usuário **
 	@ApiOperation(value = "Cadastrar usuário", notes = "Esta operação permite que a academia cadastre um novo aluno ou professor.", authorizations = {
 			@Authorization(value = "JWT") })
 	@ApiResponses(value = {
 			@ApiResponse(code = 201, message = "O usuário foi cadastrado com sucesso. Sem retorno"),
-			@ApiResponse(code = 400, response = Problem.class, message = "Caso haja campos preechidos incorretamente, serão retornadas mensagens de erro para cada campo incorreto"),
-			@ApiResponse(code = 401, response = StatusMessage.class, message = "Retorna o status 401 e a mensagem 'Sem Permissão'"),			
+			@ApiResponse(code = 400, response = Problem.class, message = "Caso haja campos preechidos incorretamente, serão retornadas mensagens de erro para cada campo incorreto com o nome e descrição do mesmo"),
+			@ApiResponse(code = 401, response = StatusMessage.class, message = "O token passado é inválido ou não possui a permissão para acessar este recurso. Este recurso só pode ser acessado por ADM"),			
 			@ApiResponse(code = 500, message = "Houve algum erro no processamento da requisição") })	
-	@ApiImplicitParam(name = "Authorization", value = "Access Token", required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
+	@ApiImplicitParam(name = "Authorization", 
+	value = "Um Bearer Token deve ser passado no header 'Authorization'. \nEx: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0ZSJ9.7g5IV9YbjporuxChCooCAgHxIibCz-Yh3Yq3qIn0dsY'", 
+	required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public void register(@Valid @RequestBody UserInputRegister userInputRegister, HttpServletRequest req) {
@@ -69,24 +73,57 @@ public class UserController {
 		userGeneralServices.register(userInputRegister);
 	}
 	
+	
+	// ** Alterar Senha **
+	@ApiOperation(value = "Alterar senha", notes = "Esta operação permite que o usuário que esqueceu sua senha mude para uma senha nova")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, response = StatusMessage.class, message = "Senha alterada com sucesso"),
+			@ApiResponse(code = 400, response = StatusMessage.class, message = "O token passado na url é inválido ou a confirmação de senha não coincide com a nova senha"),			
+			@ApiResponse(code = 500, message = "Houve algum erro no processamento da requisição") })	
 	@PostMapping("/recovery-token/{token}")
 	@ResponseStatus(HttpStatus.OK)
 	public StatusMessage tokenRecovery(@PathVariable String token, @Valid @RequestBody PasswordModify newPassword) {
 		return userGeneralServices.resetPassword(token, newPassword.getNewPassword(), newPassword.getConfirmNewPassword());
 	}
 	
+	
+	// ** E-mail para recurepação de senha **
+	@ApiOperation(value = "Solicitar e-mail para recurepação de senha", notes = "Esta operação permite que o usuário insira seu e-mail para receber o token de recuperação de senha")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, response = StatusMessage.class, message = "E-mail enviado com sucesso"),
+			@ApiResponse(code = 400, response = StatusMessage.class, message = "Será retornado caso o e-mail não seja encontrado no sistema"),		
+			@ApiResponse(code = 500, message = "Houve algum erro no processamento da requisição") })
 	@PostMapping("/recovery-password")
 	@ResponseStatus(HttpStatus.OK)
 	public StatusMessage sendMail(@Valid @RequestBody EmailRecovery emailRecovery) {
 		return userGeneralServices.sendPasswordToken(emailRecovery.getEmail());
 	}
 	
+	
+	// ** Login (Receber Bearer Token) **
+	@ApiOperation(value = "Login no sistema (Recebe bearer token no corpo de resposta)", notes = "Esta operação permite que o usuário insira seu e-mail e senha para receber seu token de acesso ao sistema")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, response = CredentialsOutput.class, message = "Logado com sucesso. Retorna o token que deverá ser passado no header nas próximas requisições"),
+			@ApiResponse(code = 400, response = StatusMessage.class, message = "Será retornado este código caso o e-mail não seja encontrado no sistema"),		
+			@ApiResponse(code = 500, message = "Houve algum erro no processamento da requisição") })
 	@PostMapping("/login")
 	@ResponseStatus(HttpStatus.OK)
 	public CredentialsOutput login(@Valid @RequestBody CredentialsInput credentialsInput) {
 		return userGeneralServices.login(credentialsInput);
 	}
 	
+	
+	// ** Listar os alunos da academia **
+	@ApiOperation(value = "Listar alunos", notes = "Esta operação permite que a academia e professores possam listar os alunos. Neste mesmo endpoint também é possível buscar alunos por nome, cpf ou e-mail", authorizations = {
+			@Authorization(value = "JWT") })
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, response = UserOutputList.class, responseContainer = "List", message = "Retorna os alunos da academia"),
+			@ApiResponse(code = 400, response = StatusMessage.class, message = "Caso o parâmetro de busca recebido pela api não corresponda à Nome, Cpf ou Email"),
+			@ApiResponse(code = 401, response = StatusMessage.class, message = "O token passado é inválido ou não possui a permissão para acessar este recurso. Este recurso só pode ser acessado por ADM ou professor"),			
+			@ApiResponse(code = 500, message = "Houve algum erro no processamento da requisição") })	
+	@ApiImplicitParam(name = "Authorization", 
+	value = "Um Bearer Token deve ser passado no header 'Authorization'. \nEx: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0ZSJ9.7g5IV9YbjporuxChCooCAgHxIibCz-Yh3Yq3qIn0dsY'",
+	required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
 	@GetMapping("/students")
 	@ResponseStatus(HttpStatus.OK)
 	public List<UserOutputList> listStudents(HttpServletRequest req, @RequestBody(required = false) UserInputSearch search) {	
@@ -94,6 +131,18 @@ public class UserController {
 		return userGeneralServices.listByRole(Role.STUDENT, search);
 	}
 	
+	
+	// ** Listar os professores da academia **
+	@ApiOperation(value = "Listar professores", notes = "Esta operação permite que a academia possa listar todos os professores. Neste mesmo endpoint também é possível buscar professores por nome, cpf ou e-mail", authorizations = {
+			@Authorization(value = "JWT") })
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, response = UserOutputList.class, responseContainer = "List", message = "Retorna os professores da academia"),
+			@ApiResponse(code = 400, response = StatusMessage.class, message = "Caso o parâmetro de busca recebido pela api não corresponda à Nome, Cpf ou Email"),
+			@ApiResponse(code = 401, response = StatusMessage.class, message = "O token passado é inválido ou não possui a permissão para acessar este recurso. Este recurso só pode ser acessado por ADM"),			
+			@ApiResponse(code = 500, message = "Houve algum erro no processamento da requisição") })	
+	@ApiImplicitParam(name = "Authorization", 
+	value = "Um Bearer Token deve ser passado no header 'Authorization'. \nEx: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0ZSJ9.7g5IV9YbjporuxChCooCAgHxIibCz-Yh3Yq3qIn0dsY'",  
+	required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
 	@GetMapping("/teachers")
 	@ResponseStatus(HttpStatus.OK)
 	public List<UserOutputList> listTeachers(HttpServletRequest req, @RequestBody(required = false) UserInputSearch search) {											

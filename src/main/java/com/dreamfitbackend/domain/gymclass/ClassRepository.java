@@ -13,7 +13,7 @@ public interface ClassRepository extends JpaRepository<Class, Long> {
 	
 	@Query(value = "SELECT COUNT(*)"
 			+ "FROM students_classes as relation INNER JOIN classes as class ON class.id = relation.class_id "
-			+ "WHERE relation.user_id = :user_id AND DATE(class.date) = :currentDate;",
+			+ "WHERE relation.user_id = :user_id AND DATE(class.date) = :currentDate;", // TODO investigar data
 			nativeQuery = true)
 	Integer getUserClasses(@Param("user_id") Long userId, @Param("currentDate") Date currentDate);
 	

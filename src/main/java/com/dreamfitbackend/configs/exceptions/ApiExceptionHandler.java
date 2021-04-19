@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.dreamfitbackend.configs.generalDtos.StatusMessage;
+
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -29,12 +31,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	public ResponseEntity<Object> handleMessage(MessageException ex, WebRequest request) {
 		HttpStatus status = ex.getStatus();	
 
-		Problem problem = new Problem();
-		problem.setStatus(status.value());
-		problem.setTitle(ex.getMessage());
-		problem.setDateTime(OffsetDateTime.now());			
+		StatusMessage statusMessage = new StatusMessage(status.value(), ex.getMessage());		
 		
-		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+		return handleExceptionInternal(ex, statusMessage, new HttpHeaders(), status, request);
 	}
 	
 	@ExceptionHandler(FieldsException.class)

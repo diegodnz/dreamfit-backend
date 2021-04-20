@@ -30,8 +30,8 @@
 - spring.mail.username (Email necessário para envio da mensagem de recuperação de senha. Este email deve permitir acesso de fontes desconhecidas), 
 - spring.mail.password (Senha deste email)
 - Crie o banco de dados "dreamFit" manualmente no postgres.
-- Use o ```./mvnw clean install -DskipTests``` para a gestão de dependências
-- Agora pode executar o projeto com ```./mvnw spring-boot:run```
+- Use o ```mvn clean install -DskipTests``` para a gestão de dependências
+- Agora pode executar o projeto com ```mvn spring-boot:run```
 - O projeto também pode ser executado a partir do kit de desenvolvimento do Spring: https://spring.io/tools
 - Endpoints podem ser testados com softwares como postman e insomnia
 

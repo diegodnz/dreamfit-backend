@@ -31,7 +31,7 @@ public class ClassServices {
 		 return null; // TODO implementar
 	}
 	
-	public StatusMessage makeAppointment(Long id, String userCpf) {
+	public StatusMessage makeAppointment(Long id, User user) {
 		Class gymClass = classRepo.getById(id);
 		
 		if (gymClass == null) {
@@ -47,8 +47,7 @@ public class ClassServices {
 			throw new MessageException("Não há vagas para esta aula", HttpStatus.BAD_REQUEST);
 		}
 		
-		User user = userRepo.findByCpf(userCpf);
-		Integer schedule = classRepo.getUserClasses(user.getId(), new Date(System.currentTimeMillis()));
+		Integer schedule = classRepo.getUserClasses(user.getId(), new Date(System.currentTimeMillis())); // TODO Tá errado, tem q checar o horário da aula
 		if (schedule > 1) {
 			throw new MessageException("Você só pode agendar 2 aulas no mesmo dia", HttpStatus.BAD_REQUEST);
 		}

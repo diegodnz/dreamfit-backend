@@ -19,6 +19,7 @@ import com.dreamfitbackend.configs.security.JWTUtil;
 import com.dreamfitbackend.configs.security.Permissions;
 import com.dreamfitbackend.domain.gymclass.models.ClassInputRegisterMany;
 import com.dreamfitbackend.domain.gymclass.services.ClassServices;
+import com.dreamfitbackend.domain.usuario.User;
 import com.dreamfitbackend.domain.usuario.UserRepository;
 
 import io.swagger.annotations.ApiImplicitParam;
@@ -65,8 +66,8 @@ public class ClassController {
 	@PostMapping("/schedule/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public StatusMessage makeAppointment(HttpServletRequest req, @PathVariable Long id) {
-		String userCpf = authorization.auth(userRepo, req, Permissions.PROF_STUDENT, "Somente usuários da academia podem marcar aulas", HttpStatus.FORBIDDEN);		
-		return classServices.makeAppointment(id, userCpf);
+		User user = authorization.auth(userRepo, req, Permissions.PROF_STUDENT, "Somente usuários da academia podem marcar aulas", HttpStatus.FORBIDDEN);		
+		return classServices.makeAppointment(id, user);
 	}
 
 }

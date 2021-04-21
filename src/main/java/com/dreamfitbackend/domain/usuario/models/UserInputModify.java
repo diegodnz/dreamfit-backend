@@ -17,7 +17,9 @@ public class UserInputModify {
 	private String phone;
 	
 	private String profilePicture;
-
+	
+	private Integer fitcoins;
+	
 	public String getEmail() {
 		return email;
 	}
@@ -72,6 +74,14 @@ public class UserInputModify {
 
 	public void setProfilePicture(String profilePicture) {
 		this.profilePicture = profilePicture;
+	}
+
+	public Integer getFitcoins() {
+		return fitcoins;
+	}
+
+	public void setFitcoins(Integer fitcoins) {
+		this.fitcoins = fitcoins;
 	}
 	
 }

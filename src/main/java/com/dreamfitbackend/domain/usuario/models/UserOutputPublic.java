@@ -6,82 +6,56 @@ import java.time.LocalDate;
 import com.dreamfitbackend.domain.usuario.enums.MeasureChange;
 import com.dreamfitbackend.domain.usuario.enums.Role;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-public class UserOutputComplete {
+public class UserOutputPublic {
 	
 	@ApiModelProperty(position = 1)
-	private String cpf;
-	
-	@ApiModelProperty(position = 2)
-	private String email;
-	
-	@ApiModelProperty(position = 3)
 	private String name;
 	
-	@ApiModelProperty(position = 4, example = "1999-10-14")
+	@ApiModelProperty(position = 2, example = "1999-10-14")
 	private LocalDate birthDate;
 	
-	@ApiModelProperty(position = 5)
+	@ApiModelProperty(position = 3)
 	private String gender;
 	
-	@ApiModelProperty(position = 6, example = "Aluno", allowableValues = "Academia, Professor, Aluno")
+	@ApiModelProperty(position = 4, example = "Aluno", allowableValues = "Academia, Professor, Aluno")
     private Role role_user;
 	
-	@ApiModelProperty(position = 7)
-	private String phone;
-	
-	@ApiModelProperty(position = 8)
+	@ApiModelProperty(position = 5)
 	private String profilePicture;
 	
-	@ApiModelProperty(position = 9)
+	@ApiModelProperty(position = 6)
 	private Float weight;
 	
-	@ApiModelProperty(position = 10, example = "Aumentou", allowableValues = "Aumentou, Diminuiu, Manteve")
+	@ApiModelProperty(position = 7, example = "Aumentou", allowableValues = "Aumentou, Diminuiu, Manteve")
 	private MeasureChange weightChange;
 	
-	@ApiModelProperty(position = 11)
+	@ApiModelProperty(position = 8)
 	private Float armMeasurement;
 	
-	@ApiModelProperty(position = 12, example = "Diminuiu", allowableValues = "Aumentou, Diminuiu, Manteve")
+	@ApiModelProperty(position = 9, example = "Diminuiu", allowableValues = "Aumentou, Diminuiu, Manteve")
 	private MeasureChange armMeasurementChange;
 	
-	@ApiModelProperty(position = 13)
+	@ApiModelProperty(position = 10)
 	private Float legMeasurement;
 
-	@ApiModelProperty(position = 14, example = "Manteve", allowableValues = "Aumentou, Diminuiu, Manteve")
+	@ApiModelProperty(position = 11, example = "Manteve", allowableValues = "Aumentou, Diminuiu, Manteve")
 	private MeasureChange legMeasurementChange;
 	
-	@ApiModelProperty(position = 15)
+	@ApiModelProperty(position = 12)
 	private Float hipMeasurement;
 
-	@ApiModelProperty(position = 16, example = "Aumentou", allowableValues = "Aumentou, Diminuiu, Manteve")
+	@ApiModelProperty(position = 13, example = "Aumentou", allowableValues = "Aumentou, Diminuiu, Manteve")
 	private MeasureChange hipMeasurementChange;
 	
-	@ApiModelProperty(position = 17)
+	@ApiModelProperty(position = 14)
 	private Float bellyMeasurement;
 
-	@ApiModelProperty(position = 18, example = "Aumentou", allowableValues = "Aumentou, Diminuiu, Manteve")
+	@ApiModelProperty(position = 15, example = "Aumentou", allowableValues = "Aumentou, Diminuiu, Manteve")
 	private MeasureChange bellyMeasurementChange;
-	
-	@ApiModelProperty(position = 19)
-	private Integer fitcoins;
-
-	public String getCpf() {
-		return cpf;
-	}
-
-	public void setCpf(String cpf) {
-		this.cpf = cpf;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
 
 	public String getName() {
 		return name;
@@ -113,14 +87,6 @@ public class UserOutputComplete {
 
 	public void setRole_user(Role role_user) {
 		this.role_user = role_user;
-	}
-
-	public String getPhone() {
-		return phone;
-	}
-
-	public void setPhone(String phone) {
-		this.phone = phone;
 	}
 
 	public String getProfilePicture() {
@@ -169,14 +135,6 @@ public class UserOutputComplete {
 
 	public void setBellyMeasurement(Float bellyMeasurement) {
 		this.bellyMeasurement = bellyMeasurement;
-	}
-
-	public Integer getFitcoins() {
-		return fitcoins;
-	}
-
-	public void setFitcoins(Integer fitcoins) {
-		this.fitcoins = fitcoins;
 	}
 
 	public String getWeightChange() {

@@ -1,5 +1,6 @@
 package com.dreamfitbackend.domain.usuario.services;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,6 +23,8 @@ import com.dreamfitbackend.configs.security.CredentialsInput;
 import com.dreamfitbackend.configs.security.CredentialsOutput;
 import com.dreamfitbackend.configs.security.JWTUtil;
 import com.dreamfitbackend.domain.gymclass.ClassRepository;
+import com.dreamfitbackend.domain.user_measures.UserMeasures;
+import com.dreamfitbackend.domain.user_measures.UserMeasuresRepository;
 import com.dreamfitbackend.domain.usuario.User;
 import com.dreamfitbackend.domain.usuario.UserRepository;
 import com.dreamfitbackend.domain.usuario.enums.MeasureChange;
@@ -42,6 +45,9 @@ public class UserGeneralServices {
 	
 	@Autowired
 	private UserRepository userRepo;
+	
+	@Autowired
+	private UserMeasuresRepository userMeasuresRepo;
 	
 	@Autowired
 	private ClassRepository classRepo;
@@ -97,7 +103,18 @@ public class UserGeneralServices {
 		
 		newUser.setPassword(BCrypt.hashpw(newUser.getPassword(), BCrypt.gensalt()));
 		newUser.setFitcoins(0);
+		
+		UserMeasures userMeasures = new UserMeasures();	
+		userMeasures.setUser(newUser);
+		userMeasures.setDate(LocalDateTime.now());
+		userMeasures.setWeight(userInputRegister.getWeight());
+		userMeasures.setArm_measurement(userInputRegister.getArmMeasurement());
+		userMeasures.setLeg_measurement(userInputRegister.getLegMeasurement());
+		userMeasures.setHip_measurement(userInputRegister.getHipMeasurement());
+		userMeasures.setBelly_measurement(userInputRegister.getBellyMeasurement());				
+		
 		userRepo.save(newUser);
+		userMeasuresRepo.save(userMeasures);
 	}
 	
 	public CredentialsOutput login(CredentialsInput credentialsInput) {

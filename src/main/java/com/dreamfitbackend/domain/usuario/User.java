@@ -14,9 +14,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.dreamfitbackend.domain.gymclass.Class;
+import com.dreamfitbackend.domain.user_measures.UserMeasures;
 import com.dreamfitbackend.domain.usuario.enums.Role;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -41,6 +43,9 @@ public class User implements Serializable {
 	
 	@Column(unique = true)	
 	private String email;
+	
+	@OneToMany(mappedBy = "user")
+	private Set<UserMeasures> userMeasures;
 	
 	@ManyToMany(mappedBy = "teachers")
 	private Set<Class> classesTeacher;

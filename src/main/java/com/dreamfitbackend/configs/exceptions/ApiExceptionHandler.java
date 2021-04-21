@@ -76,7 +76,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		
 		Problem problem = new Problem();
 		problem.setStatus(status.value());
-		problem.setTitle("Requisição com campos faltando ou preenchidos incorretamente");
+		problem.setTitle("Um ou mais campos estão invalidos");
 		problem.setDateTime(OffsetDateTime.now());	
 		
 		problem.setFields(fields);

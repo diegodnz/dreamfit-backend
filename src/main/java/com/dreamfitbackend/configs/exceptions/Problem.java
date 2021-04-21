@@ -6,17 +6,25 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+import io.swagger.annotations.ApiModelProperty;
+
 @JsonInclude(Include.NON_NULL)
 public class Problem {
 
+	@ApiModelProperty(position = 1)
 	private Integer status;
+	@ApiModelProperty(position = 2)
 	private OffsetDateTime dateTime;
+	@ApiModelProperty(position = 3, example = "Um ou mais campos estão invalidos")
 	private String title;
+	@ApiModelProperty(position = 4)
 	private List<Field> fields;
 
 	public static class Field {
-
+		
+		@ApiModelProperty(position = 1)
 		private String name;
+		@ApiModelProperty(position = 2)
 		private String message;
 
 		public Field(String name, String message) {

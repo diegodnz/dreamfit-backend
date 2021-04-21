@@ -1,0 +1,7 @@
+CREATE TABLE rewards(
+	id BIGSERIAL NOT NULL PRIMARY KEY,
+	title VARCHAR(255) NOT NULL,
+	description VARCHAR(255),
+	quantity INTEGER NOT NULL,
+	price INTEGER NOT NULL
+);

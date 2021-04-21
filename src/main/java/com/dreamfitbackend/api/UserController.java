@@ -22,6 +22,9 @@ import com.dreamfitbackend.configs.security.CredentialsInput;
 import com.dreamfitbackend.configs.security.CredentialsOutput;
 import com.dreamfitbackend.configs.security.JWTUtil;
 import com.dreamfitbackend.configs.security.Permissions;
+import com.dreamfitbackend.domain.exercise.models.ExerciseInputRegister;
+import com.dreamfitbackend.domain.exercise.models.ExerciseOutputComplete;
+import com.dreamfitbackend.domain.exercise.services.ExerciseServices;
 import com.dreamfitbackend.domain.usuario.User;
 import com.dreamfitbackend.domain.usuario.UserRepository;
 import com.dreamfitbackend.domain.usuario.enums.Role;
@@ -52,6 +55,9 @@ public class UserController {
 	
 	@Autowired
 	private UserGeneralServices userGeneralServices;
+	
+	@Autowired
+	private ExerciseServices exerciseServices;
 	
 	@Autowired
 	private Auth authorization;
@@ -167,26 +173,66 @@ public class UserController {
 	@GetMapping("/public_profile/{uuid}")
 	@ResponseStatus(HttpStatus.OK)
 	public UserOutputPublic publicProfile(HttpServletRequest req, @PathVariable String uuid) {
-		authorization.auth(userRepo, req, Permissions.ADM_PROF_STUDENT, "Sem permissão", HttpStatus.FORBIDDEN);
+		authorization.auth(userRepo, req, Permissions.ADM_PROF_STUDENT, "Sem Permissão", HttpStatus.UNAUTHORIZED);
 		return userGeneralServices.publicProfile(uuid);
 	}
 	
+	
 	// ** Perfil completo de usuário **
-		@ApiOperation(value = "Perfil completo do usuário", notes = "Esta operação permite que a academia ou professor possa obter o perfil completo de alguém. Um aluno só poderá obter seu próprio perfil completo", authorizations = {
-				@Authorization(value = "JWT") })
-		@ApiResponses(value = {
-				@ApiResponse(code = 200, response = UserOutputComplete.class, message = "Retorna o perfil completo do usuário"),
-				@ApiResponse(code = 403, response = StatusMessage.class, message = "O token passado é inválido ou não possui a permissão para acessar este recurso. Este recurso só pode ser acessado pela academia, um professor ou o aluno dono do perfil solicitado"),			
-				@ApiResponse(code = 404, response = StatusMessage.class, message = "Retorna este código caso o usuário não seja encontrado no sistema"),
-				@ApiResponse(code = 500, message = "Houve algum erro no processamento da requisição") })	
-		@ApiImplicitParam(name = "Authorization", 
-		value = "Um Bearer Token deve ser passado no header 'Authorization'. \nEx: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0ZSJ9.7g5IV9YbjporuxChCooCAgHxIibCz-Yh3Yq3qIn0dsY'",  
-		required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
-		@GetMapping("/private_profile/{uuid}")
-		@ResponseStatus(HttpStatus.OK)
-		public UserOutputComplete profile(HttpServletRequest req, @PathVariable String uuid) {
-			User loggedUser = authorization.auth(userRepo, req, Permissions.ADM_PROF_STUDENT, "Sem permissão", HttpStatus.FORBIDDEN);
-			return userGeneralServices.profile(uuid, loggedUser);
-		}
+	@ApiOperation(value = "Perfil completo do usuário", notes = "Esta operação permite que a academia ou professor possa obter o perfil completo de alguém. Um aluno só poderá obter seu próprio perfil completo", authorizations = {
+			@Authorization(value = "JWT") })
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, response = UserOutputComplete.class, message = "Retorna o perfil completo do usuário"),
+			@ApiResponse(code = 403, response = StatusMessage.class, message = "O token passado é inválido ou não possui a permissão para acessar este recurso. Este recurso só pode ser acessado pela academia, um professor ou o aluno dono do perfil solicitado"),			
+			@ApiResponse(code = 404, response = StatusMessage.class, message = "Retorna este código caso o usuário não seja encontrado no sistema"),
+			@ApiResponse(code = 500, message = "Houve algum erro no processamento da requisição") })	
+	@ApiImplicitParam(name = "Authorization", 
+	value = "Um Bearer Token deve ser passado no header 'Authorization'. \nEx: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0ZSJ9.7g5IV9YbjporuxChCooCAgHxIibCz-Yh3Yq3qIn0dsY'",  
+	required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
+	@GetMapping("/private_profile/{uuid}")
+	@ResponseStatus(HttpStatus.OK)
+	public UserOutputComplete profile(HttpServletRequest req, @PathVariable String uuid) {
+		User loggedUser = authorization.auth(userRepo, req, Permissions.ADM_PROF_STUDENT, "Sem Permissão", HttpStatus.UNAUTHORIZED);
+		return userGeneralServices.profile(uuid, loggedUser);
+	}
+	
+	
+	// ** Adicionar lista de treino para um aluno **
+	@ApiOperation(value = "Adicionar lista de treino para um aluno", notes = "Esta operação permite que a academia ou professor adicionem uma lista de treino para um aluno", authorizations = {
+			@Authorization(value = "JWT") })
+	@ApiResponses(value = {
+			@ApiResponse(code = 201, message = "O Treino foi atribuído ao aluno. Sem retorno"),
+			@ApiResponse(code = 400, response = Problem.class, message = "Caso haja campos preechidos incorretamente, serão retornadas mensagens de erro para cada campo incorreto com o nome e descrição do mesmo"),		
+			@ApiResponse(code = 401, response = StatusMessage.class, message = "O token passado é inválido ou não possui a permissão para acessar este recurso. Este recurso só pode ser acessado pela academia ou professor"),			
+			@ApiResponse(code = 404, response = StatusMessage.class, message = "Retorna este código caso o usuário não seja encontrado no sistema"),
+			@ApiResponse(code = 500, message = "Houve algum erro no processamento da requisição") })	
+	@ApiImplicitParam(name = "Authorization", 
+	value = "Um Bearer Token deve ser passado no header 'Authorization'. \nEx: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0ZSJ9.7g5IV9YbjporuxChCooCAgHxIibCz-Yh3Yq3qIn0dsY'",  
+	required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
+	@PostMapping("/exercises/{uuid}")
+	@ResponseStatus(HttpStatus.CREATED)
+	public void registerExercises(HttpServletRequest req, @Valid @RequestBody ExerciseInputRegister exerciseInputRegister,@PathVariable String uuid) {
+		authorization.auth(userRepo, req, Permissions.ADM_PROF, "Sem Permissão", HttpStatus.UNAUTHORIZED);
+		exerciseServices.register(exerciseInputRegister, uuid);
+	}
+	
+	
+	// ** Obter lista de treino **
+	@ApiOperation(value = "Obter lista de treino", notes = "Esta operação permite que a academia ou professor veja a lista de treinos de um aluno. O aluno só pode acessar sua própria lista de treino", authorizations = {
+			@Authorization(value = "JWT") })
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, response = ExerciseOutputComplete.class, message = "Retorna a lista de treinos"),
+			@ApiResponse(code = 401, response = StatusMessage.class, message = "O token passado é inválido ou não possui a permissão para acessar este recurso. Este recurso só pode ser acessado pela academia, professor. Um aluno só pode aceessar sua própria lista de treino"),
+			@ApiResponse(code = 404, response = StatusMessage.class, message = "Retorna este código caso o usuário não seja encontrado no sistema"),
+			@ApiResponse(code = 500, message = "Houve algum erro no processamento da requisição") })	
+	@ApiImplicitParam(name = "Authorization", 
+	value = "Um Bearer Token deve ser passado no header 'Authorization'. \nEx: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0ZSJ9.7g5IV9YbjporuxChCooCAgHxIibCz-Yh3Yq3qIn0dsY'",  
+	required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
+	@GetMapping("/exercises/{uuid}")
+	@ResponseStatus(HttpStatus.OK)
+	public ExerciseOutputComplete exercises(HttpServletRequest req, @PathVariable String uuid) {
+		User loggedUser = authorization.auth(userRepo, req, Permissions.ADM_PROF_STUDENT, "Sem Permissão", HttpStatus.UNAUTHORIZED);
+		return exerciseServices.getExercises(loggedUser, uuid);
+	}
 	
 }

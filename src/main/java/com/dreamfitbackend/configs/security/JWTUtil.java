@@ -48,7 +48,7 @@ public class JWTUtil {
 				.compact();
 	}
 	
-	public String verifyToken(UserRepository userRepo ,HttpServletRequest req, List<Integer> roles) {
+	public User verifyToken(UserRepository userRepo ,HttpServletRequest req, List<Integer> roles) {
 		try {
 			String token = (String)req.getHeader("Authorization").substring(7);	
 			return validToken(userRepo, token, roles);
@@ -57,7 +57,7 @@ public class JWTUtil {
 		}
 	}
 	
-	public String validToken(UserRepository userRepo, String token, List<Integer> roles) {
+	public User validToken(UserRepository userRepo, String token, List<Integer> roles) {
 		Claims claims = getClaims(token);
 		if (claims != null) {
 			String cpf = claims.getSubject();
@@ -66,7 +66,7 @@ public class JWTUtil {
 			Date expirationDate = claims.getExpiration();
 			Date now = new Date(System.currentTimeMillis());			
 			if (roles.contains(roleToken) && user != null && expirationDate != null && now.before(expirationDate)) {
-				return cpf;
+				return user;
 			}
 		}	
 		return null;

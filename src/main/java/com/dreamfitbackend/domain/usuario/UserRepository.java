@@ -33,4 +33,34 @@ public interface UserRepository extends JpaRepository<User, Long>{
 	@Query(value = "UPDATE users SET token_reset = :token WHERE email = :email", nativeQuery = true)
 	@Modifying@Transactional
 	void setResetToken(@Param("email") String email, @Param("token") String token_reset);
+	
+	@Query(value = "SELECT weight FROM user_measures WHERE user_id = :id ORDER BY date limit 2", nativeQuery = true)
+	List<Float> getWeightMeasures(@Param("id") Long id);
+	
+	@Query(value = "SELECT arm_measurement FROM user_measures WHERE user_id = :id ORDER BY date limit 2", nativeQuery = true)
+	List<Float> getArmMeasures(@Param("id") Long id);
+	
+	@Query(value = "SELECT leg_measurement FROM user_measures WHERE user_id = :id ORDER BY date limit 2", nativeQuery = true)
+	List<Float> getLegMeasures(@Param("id") Long id);
+	
+	@Query(value = "SELECT hip_measurement FROM user_measures WHERE user_id = :id ORDER BY date limit 2", nativeQuery = true)
+	List<Float> getHipMeasures(@Param("id") Long id);
+	
+	@Query(value = "SELECT belly_measurement FROM user_measures WHERE user_id = :id ORDER BY date limit 2", nativeQuery = true)
+	List<Float> getBellyMeasures(@Param("id") Long id);
+	
+	@Query(value = "SELECT weight FROM user_measures WHERE user_id = :id ORDER BY date limit 1", nativeQuery = true)
+	Float getWeight(@Param("id") Long id);
+	
+	@Query(value = "SELECT arm_measurement FROM user_measures WHERE user_id = :id ORDER BY date limit 1", nativeQuery = true)
+	Float getArmMeasurement(@Param("id") Long id);
+	
+	@Query(value = "SELECT leg_measurement FROM user_measures WHERE user_id = :id ORDER BY date limit 1", nativeQuery = true)
+	Float getLegMeasurement(@Param("id") Long id);
+	
+	@Query(value = "SELECT hip_measurement FROM user_measures WHERE user_id = :id ORDER BY date limit 1", nativeQuery = true)
+	Float getHipMeasurement(@Param("id") Long id);
+	
+	@Query(value = "SELECT belly_measurement FROM user_measures WHERE user_id = :id ORDER BY date limit 1", nativeQuery = true)
+	Float getBellyMeasurement(@Param("id") Long id);
 }

@@ -23,7 +23,7 @@ public class Mapper {
         return emptyNames.toArray(result);
     }
 
-    public static void copyProperties(Object src, Object target) {
+    public static void copyPropertiesIgnoreNull(Object src, Object target) {
         BeanUtils.copyProperties(src, target, getNullPropertyNames(src));
     }
     

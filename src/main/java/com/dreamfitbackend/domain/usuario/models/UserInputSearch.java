@@ -3,10 +3,10 @@ package com.dreamfitbackend.domain.usuario.models;
 import io.swagger.annotations.ApiModelProperty;
 
 public class UserInputSearch {
-	@ApiModelProperty(allowableValues = "Nome, Cpf, Email")
+	@ApiModelProperty(position = 1, allowableValues = "Nome, Cpf, Email")
 	private String type;
 	
-	@ApiModelProperty(example = ("Diego"))
+	@ApiModelProperty(position = 2, example = ("Diego"))
 	private String search;
 
 	public String getType() {

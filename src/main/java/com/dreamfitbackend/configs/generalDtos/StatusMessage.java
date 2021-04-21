@@ -1,9 +1,13 @@
 package com.dreamfitbackend.configs.generalDtos;
 
+import io.swagger.annotations.ApiModelProperty;
+
 public class StatusMessage {
 	
+	@ApiModelProperty(position = 1)
 	private Integer status;
 	
+	@ApiModelProperty(position = 2)
 	private String message;
 
 	public StatusMessage(Integer status, String message) {

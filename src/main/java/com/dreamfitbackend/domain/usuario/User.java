@@ -2,6 +2,7 @@ package com.dreamfitbackend.domain.usuario;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Set;
@@ -49,7 +50,7 @@ public class User implements Serializable {
 	
 	private String name;
 	
-	private Date birthDate;
+	private LocalDate birthDate;
 	
 	private String gender;
 	
@@ -62,13 +63,15 @@ public class User implements Serializable {
 	
 	private String profilePicture;
 	
+	private Integer fitcoins;
+	
 	private String tokenReset;
 
 	public User() {
 		this.uuid = UUID.randomUUID().toString();
 	}
 	
-	public User(String cpf, String email, String name, Date birthDate, String gender, String password,
+	public User(String cpf, String email, String name, LocalDate birthDate, String gender, String password,
 			Integer role_user, String phone, String profilePicture) {
 		this.uuid = UUID.randomUUID().toString();
 		this.cpf = cpf;
@@ -80,6 +83,7 @@ public class User implements Serializable {
 		this.role_user = role_user;
 		this.phone = phone;
 		this.profilePicture = profilePicture;
+		this.fitcoins = 0;
 	}
 
 	public void addClassStudent(Class gymClass) {
@@ -126,11 +130,11 @@ public class User implements Serializable {
 		this.name = name;
 	}
 
-	public Date getBirthDate() {
+	public LocalDate getBirthDate() {
 		return birthDate;
 	}
 
-	public void setBirthDate(Date birthDate) {
+	public void setBirthDate(LocalDate birthDate) {
 		this.birthDate = birthDate;
 	}
 
@@ -180,6 +184,14 @@ public class User implements Serializable {
 
 	public void setTokenReset(String tokenReset) {
 		this.tokenReset = tokenReset;
+	}
+
+	public Integer getFitcoins() {
+		return fitcoins;
+	}
+
+	public void setFitcoins(Integer fitcoins) {
+		this.fitcoins = fitcoins;
 	}
 
 	@Override

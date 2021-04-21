@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dreamfitbackend.configs.exceptions.MessageException;
 import com.dreamfitbackend.configs.exceptions.Problem;
 import com.dreamfitbackend.configs.generalDtos.StatusMessage;
 import com.dreamfitbackend.configs.security.Auth;
@@ -23,13 +22,16 @@ import com.dreamfitbackend.configs.security.CredentialsInput;
 import com.dreamfitbackend.configs.security.CredentialsOutput;
 import com.dreamfitbackend.configs.security.JWTUtil;
 import com.dreamfitbackend.configs.security.Permissions;
+import com.dreamfitbackend.domain.usuario.User;
 import com.dreamfitbackend.domain.usuario.UserRepository;
 import com.dreamfitbackend.domain.usuario.enums.Role;
 import com.dreamfitbackend.domain.usuario.models.EmailRecovery;
 import com.dreamfitbackend.domain.usuario.models.PasswordModify;
 import com.dreamfitbackend.domain.usuario.models.UserInputRegister;
 import com.dreamfitbackend.domain.usuario.models.UserInputSearch;
+import com.dreamfitbackend.domain.usuario.models.UserOutputComplete;
 import com.dreamfitbackend.domain.usuario.models.UserOutputList;
+import com.dreamfitbackend.domain.usuario.models.UserOutputPublic;
 import com.dreamfitbackend.domain.usuario.services.UserGeneralServices;
 
 import io.swagger.annotations.ApiImplicitParam;
@@ -149,5 +151,42 @@ public class UserController {
 		authorization.auth(userRepo, req, Permissions.ADM, "Sem permissão", HttpStatus.UNAUTHORIZED);		
 		return userGeneralServices.listByRole(Role.TEACHER, search);
 	}
+	
+	
+	// ** Perfil público do usuário **
+	@ApiOperation(value = "Perfil público do usuário", notes = "Esta operação permite que um usuário logado possa obter o perfil público de alguém.", authorizations = {
+			@Authorization(value = "JWT") })
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, response = UserOutputPublic.class, message = "Retorna o perfil público do usuário"),
+			@ApiResponse(code = 403, response = StatusMessage.class, message = "O token passado é inválido ou não possui a permissão para acessar este recurso. Este recurso só pode ser acessado por um usuário logado"),			
+			@ApiResponse(code = 404, response = StatusMessage.class, message = "Retorna este código caso o usuário não seja encontrado no sistema"),
+			@ApiResponse(code = 500, message = "Houve algum erro no processamento da requisição") })	
+	@ApiImplicitParam(name = "Authorization", 
+	value = "Um Bearer Token deve ser passado no header 'Authorization'. \nEx: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0ZSJ9.7g5IV9YbjporuxChCooCAgHxIibCz-Yh3Yq3qIn0dsY'",  
+	required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
+	@GetMapping("/public_profile/{uuid}")
+	@ResponseStatus(HttpStatus.OK)
+	public UserOutputPublic publicProfile(HttpServletRequest req, @PathVariable String uuid) {
+		authorization.auth(userRepo, req, Permissions.ADM_PROF_STUDENT, "Sem permissão", HttpStatus.FORBIDDEN);
+		return userGeneralServices.publicProfile(uuid);
+	}
+	
+	// ** Perfil completo de usuário **
+		@ApiOperation(value = "Perfil completo do usuário", notes = "Esta operação permite que a academia ou professor possa obter o perfil completo de alguém. Um aluno só poderá obter seu próprio perfil completo", authorizations = {
+				@Authorization(value = "JWT") })
+		@ApiResponses(value = {
+				@ApiResponse(code = 200, response = UserOutputComplete.class, message = "Retorna o perfil completo do usuário"),
+				@ApiResponse(code = 403, response = StatusMessage.class, message = "O token passado é inválido ou não possui a permissão para acessar este recurso. Este recurso só pode ser acessado pela academia, um professor ou o aluno dono do perfil solicitado"),			
+				@ApiResponse(code = 404, response = StatusMessage.class, message = "Retorna este código caso o usuário não seja encontrado no sistema"),
+				@ApiResponse(code = 500, message = "Houve algum erro no processamento da requisição") })	
+		@ApiImplicitParam(name = "Authorization", 
+		value = "Um Bearer Token deve ser passado no header 'Authorization'. \nEx: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0ZSJ9.7g5IV9YbjporuxChCooCAgHxIibCz-Yh3Yq3qIn0dsY'",  
+		required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
+		@GetMapping("/private_profile/{uuid}")
+		@ResponseStatus(HttpStatus.OK)
+		public UserOutputComplete profile(HttpServletRequest req, @PathVariable String uuid) {
+			User loggedUser = authorization.auth(userRepo, req, Permissions.ADM_PROF_STUDENT, "Sem permissão", HttpStatus.FORBIDDEN);
+			return userGeneralServices.profile(uuid, loggedUser);
+		}
 	
 }

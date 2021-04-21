@@ -1,6 +1,7 @@
 package com.dreamfitbackend.domain.usuario.models;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -12,49 +13,65 @@ import org.hibernate.validator.constraints.br.CPF;
 import com.dreamfitbackend.configs.validations.ValidPassword;
 import com.dreamfitbackend.domain.usuario.enums.Role;
 
+import io.swagger.annotations.ApiModelProperty;
+
 public class UserInputRegister {
 	
 	@NotBlank
 	@CPF
+	@ApiModelProperty(position = 1)
 	private String cpf;
 	
 	@NotBlank
 	@Email
 	@Size(max = 255)
+	@ApiModelProperty(position = 2)
 	private String email;
 	
 	@NotBlank
-	@Size(max = 255)	
+	@Size(max = 255)
+	@ApiModelProperty(position = 3)
 	private String name;
 	
 	@NotNull
-	private Date birthDate;
+	@ApiModelProperty(position = 4, example = "1999-10-14")
+	private LocalDate birthDate;
 	
 	@NotBlank
 	@Size(max = 255)
+	@ApiModelProperty(position = 5)
 	private String gender;
 	
 	@ValidPassword
+	@ApiModelProperty(position = 6)
 	private String password;
 	
 	@NotNull
+	@ApiModelProperty(position = 7, example = "Aluno", allowableValues = "Professor, Aluno")
     private String role_user;
 	
 	@NotBlank
 	@Size(max = 255)
+	@ApiModelProperty(position = 8)
 	private String phone;
 	
 	@Size(max = 255)
+	@ApiModelProperty(position = 9)
 	private String profilePicture;
 	
+	@ApiModelProperty(position = 10)
 	private Float weight;
 	
+	@ApiModelProperty(position = 11)
 	private Float armMeasurement;
 	
+	@ApiModelProperty(position = 12)
 	private Float legMeasurement;
 	
+	@ApiModelProperty(position = 13)
 	private Float hipMeasurement;
 	
+	@ApiModelProperty(position = 14)
 	private Float bellyMeasurement;
 
 	public UserInputRegister() {}
@@ -83,11 +100,11 @@ public class UserInputRegister {
 		this.name = name;
 	}
 
-	public Date getBirthDate() {
+	public LocalDate getBirthDate() {
 		return birthDate;
 	}
 
-	public void setBirthDate(Date bithDate) {
+	public void setBirthDate(LocalDate bithDate) {
 		this.birthDate = bithDate;
 	}
 

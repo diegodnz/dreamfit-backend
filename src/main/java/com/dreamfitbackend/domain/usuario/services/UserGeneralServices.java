@@ -261,10 +261,8 @@ public class UserGeneralServices {
 			throw new MessageException("Usuário não encontrado", HttpStatus.NOT_FOUND);
 		}
 		
-		if (loggedUser.getRole_user() == Role.STUDENT) {
-			if (loggedUser != user) {
-				throw new MessageException("Não é possivel acessar o perfil privado de outro aluno", HttpStatus.UNAUTHORIZED);
-			}
+		if (loggedUser.getRole_user() == Role.STUDENT && loggedUser != user) {			
+			throw new MessageException("Não é possivel acessar o perfil privado de outro aluno", HttpStatus.UNAUTHORIZED);			
 		}
 		
 		UserOutputComplete userProfile = new UserOutputComplete();

@@ -44,13 +44,13 @@ public class ClassController {
 	@Autowired
 	private Auth authorization;
 	
-	// ** Criar aulas **
-	@PostMapping("/schedule")
-	@ResponseStatus(HttpStatus.CREATED)
-	public StatusMessage registerClasses(HttpServletRequest req, @Valid @RequestBody ClassInputRegisterMany classesInput) {
-		authorization.auth(userRepo, req, Permissions.ADM_PROF, "Sem permissão", HttpStatus.UNAUTHORIZED);
-		return classServices.registerClasses(classesInput);
-	}
+//	// ** Criar aulas **
+//	@PostMapping("/schedule")
+//	@ResponseStatus(HttpStatus.CREATED)
+//	public StatusMessage registerClasses(HttpServletRequest req, @Valid @RequestBody ClassInputRegisterMany classesInput) {
+//		authorization.auth(userRepo, req, Permissions.ADM_PROF, "Sem permissão", HttpStatus.UNAUTHORIZED);
+//		return classServices.registerClasses(classesInput);
+//	}
 	
 	// ** Agendar aula **
 	@ApiOperation(value = "Agendar aula", notes = "Esta operação permite que um aluno ou professor agende sua aula", authorizations = {

@@ -30,28 +30,33 @@ public class Class implements Serializable {
 	@ManyToMany
 	@JoinTable(
 	  name = "teachers_classes", 
-	  joinColumns = @JoinColumn(name = "teacher_id"), 
-	  inverseJoinColumns = @JoinColumn(name = "class_id"))
+	  joinColumns = @JoinColumn(name = "class_id"), 
+	  inverseJoinColumns = @JoinColumn(name = "user_id"))
 	private Set<User> teachers;
 	
 	@ManyToMany
 	@JoinTable(
 	  name = "students_classes", 
-	  joinColumns = @JoinColumn(name = "student_id"), 
-	  inverseJoinColumns = @JoinColumn(name = "class_id"))
+	  joinColumns = @JoinColumn(name = "class_id"), 
+	  inverseJoinColumns = @JoinColumn(name = "user_id"))
 	private Set<User> students;
 	
 	private String className;
 	
-	private LocalDateTime date;
+	private LocalDateTime start_date;
+	
+	private LocalDateTime end_date;
 	
 	private Integer filledVacancies;
 	
 	private Integer totalVacancies;
+	
+	public Class() {}
 
-	public Class(String className, LocalDateTime date, Integer filledVacancies, Integer totalVacancies) {
+	public Class(String className, LocalDateTime start_date, LocalDateTime end_date, Integer filledVacancies, Integer totalVacancies) {
 		this.className = className;
-		this.date = date;
+		this.start_date = start_date;
+		this.end_date = end_date;
 		this.filledVacancies = filledVacancies;
 		this.totalVacancies = totalVacancies;
 	}
@@ -75,14 +80,22 @@ public class Class implements Serializable {
 
 	public void setClassName(String className) {
 		this.className = className;
+	}	
+
+	public LocalDateTime getStart_date() {
+		return start_date;
 	}
 
-	public LocalDateTime getDate() {
-		return date;
+	public void setStart_date(LocalDateTime start_date) {
+		this.start_date = start_date;
 	}
 
-	public void setDate(LocalDateTime date) {
-		this.date = date;
+	public LocalDateTime getEnd_date() {
+		return end_date;
+	}
+
+	public void setEnd_date(LocalDateTime end_date) {
+		this.end_date = end_date;
 	}
 
 	public Integer getFilledVacancies() {

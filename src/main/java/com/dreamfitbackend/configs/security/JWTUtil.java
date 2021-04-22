@@ -4,18 +4,20 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import com.dreamfitbackend.configs.exceptions.MessageException;
 import com.dreamfitbackend.domain.usuario.User;
 import com.dreamfitbackend.domain.usuario.UserRepository;
+import com.dreamfitbackend.domain.usuario.enums.Role;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.InvalidClaimException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
@@ -48,28 +50,64 @@ public class JWTUtil {
 				.compact();
 	}
 	
-	public User verifyToken(UserRepository userRepo ,HttpServletRequest req, List<Integer> roles) {
+	public User verifyToken(UserRepository userRepo , HttpServletRequest req, List<Integer> roles) {
 		try {
 			String token = (String)req.getHeader("Authorization").substring(7);	
 			return validToken(userRepo, token, roles);
-		} catch (Exception e) {			
+		} catch (MessageException me) {
+			throw me;
+		} catch (Exception e) {	
 			return null;
 		}
 	}
 	
 	public User validToken(UserRepository userRepo, String token, List<Integer> roles) {
 		Claims claims = getClaims(token);
-		if (claims != null) {
+		try {
+			if (claims != null) {
+				String cpf = claims.getSubject();
+				User user = userRepo.findByCpf(cpf);
+				Integer roleToken = claims.get("role", Integer.class);
+				Date expirationDate = claims.getExpiration();
+				Date now = new Date(System.currentTimeMillis());
+ 				if (expirationDate != null && now.after(expirationDate) || user == null) {
+					throw new MessageException("Faça login", HttpStatus.FORBIDDEN);
+				} else if (!roles.contains(roleToken)){
+					throw new MessageException("Sem permissão", HttpStatus.FORBIDDEN);
+				} else {
+					return user;
+				}
+			}
+		} catch (MessageException me) {
+			throw me;
+		} catch (Exception e) {}
+		return null;
+	}
+	
+	public CredentialsOutput refreshToken(UserRepository userRepo, HttpServletRequest req) {
+		try {
+			String token = (String)req.getHeader("Authorization").substring(7);	
+			Claims claims = getClaims(token);
 			String cpf = claims.getSubject();
 			User user = userRepo.findByCpf(cpf);
 			Integer roleToken = claims.get("role", Integer.class);
+			Role.toEnum(roleToken); // Testando se o código é válido. Se não for retornará exception.
 			Date expirationDate = claims.getExpiration();
-			Date now = new Date(System.currentTimeMillis());			
-			if (roles.contains(roleToken) && user != null && expirationDate != null && now.before(expirationDate)) {
-				return user;
-			}
-		}	
-		return null;
+			Date now = new Date(System.currentTimeMillis());					
+			if (user != null && expirationDate != null && now.before(expirationDate)) {
+				long diff = expirationDate.getTime() - now.getTime();
+				if (TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) < 7) {
+					return new CredentialsOutput(generateToken(cpf, roleToken));
+				}
+				System.out.println(now);
+				System.out.println(expirationDate);
+				System.out.println(TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS));
+				throw new MessageException("Token válido", HttpStatus.ACCEPTED);
+			}				
+		} catch (MessageException me) {
+			throw me;
+		} catch (Exception e) {}
+		throw new MessageException("Token inválido", HttpStatus.BAD_REQUEST);
 	}
 	
 	public OffsetDateTime expirationToken(String token) {

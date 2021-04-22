@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dreamfitbackend.configs.exceptions.MessageException;
 import com.dreamfitbackend.configs.exceptions.Problem;
 import com.dreamfitbackend.configs.generalDtos.StatusMessage;
 import com.dreamfitbackend.configs.security.Auth;
@@ -233,6 +234,20 @@ public class UserController {
 	public ExerciseOutputComplete exercises(HttpServletRequest req, @PathVariable String uuid) {
 		User loggedUser = authorization.auth(userRepo, req, Permissions.ADM_PROF_STUDENT, "Sem Permissão", HttpStatus.UNAUTHORIZED);
 		return exerciseServices.getExercises(loggedUser, uuid);
+	}
+	
+	
+	// ** Atualizar/Verificar token **
+	@ApiOperation(value = "Atualizar/Verificar token", notes = "Esta operação permite o usuário verifique a validade do seu token. Caso o token esteja perto da expiração, o mesmo é atualizado")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, response = CredentialsOutput.class, message = "Caso o token esteja perto da expiração, será retornado um novo token"),
+			@ApiResponse(code = 202, response = StatusMessage.class, message = "Token válido"),
+			@ApiResponse(code = 400, response = StatusMessage.class, message = "Token expirado ou inválido") })	
+	@GetMapping("/token")
+	@ResponseStatus(HttpStatus.OK)
+	public CredentialsOutput refreshToken(HttpServletRequest req) {
+		CredentialsOutput newToken = jwtUtil.refreshToken(userRepo, req);
+		return newToken;
 	}
 	
 }

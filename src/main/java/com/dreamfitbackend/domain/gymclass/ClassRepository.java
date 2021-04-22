@@ -1,6 +1,8 @@
 package com.dreamfitbackend.domain.gymclass;
 
-import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,13 +15,13 @@ public interface ClassRepository extends JpaRepository<Class, Long> {
 	
 	@Query(value = "SELECT COUNT(*)"
 			+ "FROM students_classes as relation INNER JOIN classes as class ON class.id = relation.class_id "
-			+ "WHERE relation.user_id = :user_id AND DATE(class.date) = :currentDate;", // TODO investigar data
+			+ "WHERE relation.user_id = :user_id AND class.start_date BETWEEN :start_day AND :end_day",
 			nativeQuery = true)
-	Integer getUserClasses(@Param("user_id") Long userId, @Param("currentDate") Date currentDate);
+	Integer getUserClasses(@Param("user_id") Long userId, @Param("start_day") LocalDateTime startDay, @Param("end_day") LocalDateTime endDay);
 	
-	@Query(value = "SELECT (SELECT class FROM classes as class) "
-			+ "FROM students_classes as relation "
+	@Query(value = "SELECT class_id "
+			+ "FROM students_classes "
 			+ "WHERE user_id = :user_id and class_id = :class_id",
 			nativeQuery = true)
-	Class verifyRelation(@Param("user_id") Long userId, @Param("class_id") Long classId);
+	Long verifyRelation(@Param("user_id") Long userId, @Param("class_id") Long classId);
 }

@@ -20,7 +20,6 @@ public class Auth {
 	
 	public User auth(UserRepository userRepo, HttpServletRequest req, List<Integer> permissions) {
 		User user = jwtUtil.verifyToken(userRepo, req, permissions);
-		System.out.println("Apos o jwt: " + user);
 		if (user == null) {
 			throw new MessageException("Faça login", HttpStatus.FORBIDDEN);
 		}

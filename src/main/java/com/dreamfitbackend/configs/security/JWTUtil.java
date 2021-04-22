@@ -53,7 +53,6 @@ public class JWTUtil {
 	public User verifyToken(UserRepository userRepo , HttpServletRequest req, List<Integer> roles) {
 		try {
 			String token = (String)req.getHeader("Authorization").substring(7);
-			System.out.println(token);
 			return validToken(userRepo, token, roles);
 		} catch (MessageException me) {
 			throw me;
@@ -71,10 +70,7 @@ public class JWTUtil {
 				Integer roleToken = claims.get("role", Integer.class);
 				Date expirationDate = claims.getExpiration();
 				Date now = new Date(System.currentTimeMillis());
- 				if (expirationDate != null && now.after(expirationDate) || user == null) { 					
- 					System.out.println("expirado");
- 					System.out.println(now);
- 					System.out.println(expirationDate); 					
+ 				if (expirationDate != null && now.after(expirationDate) || user == null) { 										
 					throw new MessageException("Faça login", HttpStatus.FORBIDDEN);
 				} else if (!roles.contains(roleToken)){
 					throw new MessageException("Sem permissão", HttpStatus.FORBIDDEN);
@@ -103,9 +99,9 @@ public class JWTUtil {
 				if (TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) < 7) {
 					return new CredentialsOutput(generateToken(cpf, roleToken), user.getUuid());
 				}
-				System.out.println(now);
-				System.out.println(expirationDate);
-				System.out.println(TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS));
+//				System.out.println(now);
+//				System.out.println(expirationDate);
+//				System.out.println(TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS));
 				throw new MessageException("Token válido", HttpStatus.ACCEPTED);
 			}				
 		} catch (MessageException me) {

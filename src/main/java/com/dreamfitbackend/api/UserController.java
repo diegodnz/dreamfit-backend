@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dreamfitbackend.configs.exceptions.MessageException;
 import com.dreamfitbackend.configs.exceptions.Problem;
 import com.dreamfitbackend.configs.generalDtos.StatusMessage;
 import com.dreamfitbackend.configs.security.Auth;
@@ -32,14 +32,16 @@ import com.dreamfitbackend.domain.usuario.enums.Role;
 import com.dreamfitbackend.domain.usuario.models.EmailRecovery;
 import com.dreamfitbackend.domain.usuario.models.PasswordModify;
 import com.dreamfitbackend.domain.usuario.models.UserInputRegister;
-import com.dreamfitbackend.domain.usuario.models.UserInputSearch;
 import com.dreamfitbackend.domain.usuario.models.UserOutputComplete;
 import com.dreamfitbackend.domain.usuario.models.UserOutputList;
 import com.dreamfitbackend.domain.usuario.models.UserOutputPublic;
 import com.dreamfitbackend.domain.usuario.services.UserGeneralServices;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
@@ -135,17 +137,17 @@ public class UserController {
 	required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
 	@GetMapping("/students")
 	@ResponseStatus(HttpStatus.OK)
-	public List<UserOutputList> listStudents(HttpServletRequest req, @RequestBody(required = false) UserInputSearch search) {
-		System.out.println(search.getType());
-		System.out.println(search.getSearch());
+	public List<UserOutputList> listStudents(HttpServletRequest req, @RequestParam(name = "type", required = false) String type,
+																	 @RequestParam(name = "search", required = false) String search) {
 		authorization.auth(userRepo, req, Permissions.ADM_PROF);	
-		return userGeneralServices.listByRole(Role.STUDENT, search);
+		return userGeneralServices.listByRole(Role.STUDENT, type, search);
 	}
 	
 	
 	// ** Listar os professores da academia **
 	@ApiOperation(value = "Listar professores", notes = "Esta operação permite que a academia possa listar todos os professores. Neste mesmo endpoint também é possível buscar professores por nome, cpf ou e-mail", authorizations = {
 			@Authorization(value = "JWT") })
+	
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, response = UserOutputList.class, responseContainer = "List", message = "Retorna os professores da academia"),
 			@ApiResponse(code = 400, response = StatusMessage.class, message = "Caso o parâmetro de busca recebido pela api não corresponda à Nome, Cpf ou Email"),
@@ -156,9 +158,10 @@ public class UserController {
 	required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
 	@GetMapping("/teachers")
 	@ResponseStatus(HttpStatus.OK)
-	public List<UserOutputList> listTeachers(HttpServletRequest req, @RequestBody(required = false) UserInputSearch search) {											
+	public List<UserOutputList> listTeachers(HttpServletRequest req, @RequestParam(name = "type", required = false) @ApiParam(value = "Tipo da busca (Ex: Buscar por nome, buscar por cpf...)", allowableValues = "Nome, Cpf, Email") String type,
+			 														 @RequestParam(name = "search", required = false) @ApiParam(value = "O texto da busca (Ex: Diego, 13958473844...)") String search) {
 		authorization.auth(userRepo, req, Permissions.ADM);		
-		return userGeneralServices.listByRole(Role.TEACHER, search);
+		return userGeneralServices.listByRole(Role.TEACHER, type, search);
 	}
 	
 	

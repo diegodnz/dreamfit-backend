@@ -55,18 +55,18 @@ public class UserGeneralServices {
 	@Autowired
 	private JWTUtil jwtUtil;
 	
-	public List<UserOutputList> listByRole(Role role, UserInputSearch search) {
+	public List<UserOutputList> listByRole(Role role, String type, String search) {
 		List<UserOutputList> listOutput = new ArrayList<>();
 		List<User> listUser = new ArrayList<>();		
-		if (search == null || search.getType() == null || search.getSearch() == null) {
+		if (type == null || search == null) {
 			listUser = userRepo.findAllByRole(role.getCod());
 		} else {		
-			if (search.getType().equals("Nome")) {
-				listUser = userRepo.findAllByNameAndRole(search.getSearch(), role.getCod());
-			} else if (search.getType().equals("Cpf")) {
-				listUser = userRepo.findAllByCpfAndRole(search.getSearch(), role.getCod());
-			} else if (search.getType().equals("Email")) {
-				listUser = userRepo.findAllByEmailAndRole(search.getSearch(), role.getCod());
+			if (type.equals("Nome")) {
+				listUser = userRepo.findAllByNameAndRole(search, role.getCod());
+			} else if (type.equals("Cpf")) {
+				listUser = userRepo.findAllByCpfAndRole(search, role.getCod());
+			} else if (type.equals("Email")) {
+				listUser = userRepo.findAllByEmailAndRole(search, role.getCod());
 			} else {
 				throw new MessageException("Tipo de busca inválida (Só são permitidas buscas por Nome, Cpf ou Email)", HttpStatus.BAD_REQUEST);
 			}

@@ -5,6 +5,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +19,7 @@ import com.dreamfitbackend.configs.security.Auth;
 import com.dreamfitbackend.configs.security.JWTUtil;
 import com.dreamfitbackend.configs.security.Permissions;
 import com.dreamfitbackend.domain.gymclass.models.ClassInputRegisterMany;
+import com.dreamfitbackend.domain.gymclass.models.ClassOutputList;
 import com.dreamfitbackend.domain.gymclass.services.ClassServices;
 import com.dreamfitbackend.domain.usuario.User;
 import com.dreamfitbackend.domain.usuario.UserRepository;
@@ -68,6 +70,24 @@ public class ClassController {
 	public StatusMessage makeAppointment(HttpServletRequest req, @PathVariable Long id) {
 		User user = authorization.auth(userRepo, req, Permissions.PROF_STUDENT);		
 		return classServices.makeAppointment(id, user);
+	}
+	
+	
+	// ** Listar aulas **
+	@ApiOperation(value = "Listar aula", notes = "Esta operação permite que um usuário receba uma lista de aulas do dia atual", authorizations = {
+			@Authorization(value = "JWT") })
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, response = ClassOutputList.class, message = "Recebe a lista de aulas do dia"),
+			@ApiResponse(code = 403, response = StatusMessage.class, message = "O token passado é inválido ou não possui a permissão para acessar este recurso. Este recurso só pode ser acessado por um usuário logado"),			
+			@ApiResponse(code = 500, message = "Houve algum erro no processamento da requisição") })	
+	@ApiImplicitParam(name = "Authorization", 
+	value = "Um Bearer Token deve ser passado no header 'Authorization'. \nEx: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0ZSJ9.7g5IV9YbjporuxChCooCAgHxIibCz-Yh3Yq3qIn0dsY'", 
+	required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
+	@GetMapping("/schedule")
+	@ResponseStatus(HttpStatus.OK)
+	public ClassOutputList getClasses(HttpServletRequest req) {
+		User user = authorization.auth(userRepo, req, Permissions.ADM_PROF_STUDENT);		
+		return classServices.getClasses(user);
 	}
 
 }

@@ -70,7 +70,7 @@ public class UserController {
 	@ApiResponses(value = {
 			@ApiResponse(code = 201, message = "O usuário foi cadastrado com sucesso. Sem retorno"),
 			@ApiResponse(code = 400, response = Problem.class, message = "Caso haja campos preechidos incorretamente, serão retornadas mensagens de erro para cada campo incorreto com o nome e descrição do mesmo"),
-			@ApiResponse(code = 401, response = StatusMessage.class, message = "O token passado é inválido ou não possui a permissão para acessar este recurso. Este recurso só pode ser acessado por ADM"),			
+			@ApiResponse(code = 403, response = StatusMessage.class, message = "O token passado é inválido ou não possui a permissão para acessar este recurso. Este recurso só pode ser acessado por ADM"),			
 			@ApiResponse(code = 500, message = "Houve algum erro no processamento da requisição") })	
 	@ApiImplicitParam(name = "Authorization", 
 	value = "Um Bearer Token deve ser passado no header 'Authorization'. \nEx: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0ZSJ9.7g5IV9YbjporuxChCooCAgHxIibCz-Yh3Yq3qIn0dsY'", 
@@ -78,7 +78,7 @@ public class UserController {
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public void register(@Valid @RequestBody UserInputRegister userInputRegister, HttpServletRequest req) {
-		authorization.auth(userRepo, req, Permissions.ADM,  "Sem permissão", HttpStatus.UNAUTHORIZED);		
+		authorization.auth(userRepo, req, Permissions.ADM);		
 		userGeneralServices.register(userInputRegister);
 	}
 	
@@ -128,7 +128,7 @@ public class UserController {
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, response = UserOutputList.class, responseContainer = "List", message = "Retorna os alunos da academia"),
 			@ApiResponse(code = 400, response = StatusMessage.class, message = "Caso o parâmetro de busca recebido pela api não corresponda à Nome, Cpf ou Email"),
-			@ApiResponse(code = 401, response = StatusMessage.class, message = "O token passado é inválido ou não possui a permissão para acessar este recurso. Este recurso só pode ser acessado por ADM ou professor"),			
+			@ApiResponse(code = 403, response = StatusMessage.class, message = "O token passado é inválido ou não possui a permissão para acessar este recurso. Este recurso só pode ser acessado por ADM ou professor"),			
 			@ApiResponse(code = 500, message = "Houve algum erro no processamento da requisição") })	
 	@ApiImplicitParam(name = "Authorization", 
 	value = "Um Bearer Token deve ser passado no header 'Authorization'. \nEx: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0ZSJ9.7g5IV9YbjporuxChCooCAgHxIibCz-Yh3Yq3qIn0dsY'",
@@ -136,7 +136,7 @@ public class UserController {
 	@GetMapping("/students")
 	@ResponseStatus(HttpStatus.OK)
 	public List<UserOutputList> listStudents(HttpServletRequest req, @RequestBody(required = false) UserInputSearch search) {	
-		authorization.auth(userRepo, req, Permissions.ADM_PROF, "Sem permissão", HttpStatus.UNAUTHORIZED);		
+		authorization.auth(userRepo, req, Permissions.ADM_PROF);		
 		return userGeneralServices.listByRole(Role.STUDENT, search);
 	}
 	
@@ -147,7 +147,7 @@ public class UserController {
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, response = UserOutputList.class, responseContainer = "List", message = "Retorna os professores da academia"),
 			@ApiResponse(code = 400, response = StatusMessage.class, message = "Caso o parâmetro de busca recebido pela api não corresponda à Nome, Cpf ou Email"),
-			@ApiResponse(code = 401, response = StatusMessage.class, message = "O token passado é inválido ou não possui a permissão para acessar este recurso. Este recurso só pode ser acessado por ADM"),			
+			@ApiResponse(code = 403, response = StatusMessage.class, message = "O token passado é inválido ou não possui a permissão para acessar este recurso. Este recurso só pode ser acessado por ADM"),			
 			@ApiResponse(code = 500, message = "Houve algum erro no processamento da requisição") })	
 	@ApiImplicitParam(name = "Authorization", 
 	value = "Um Bearer Token deve ser passado no header 'Authorization'. \nEx: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0ZSJ9.7g5IV9YbjporuxChCooCAgHxIibCz-Yh3Yq3qIn0dsY'",  
@@ -155,7 +155,7 @@ public class UserController {
 	@GetMapping("/teachers")
 	@ResponseStatus(HttpStatus.OK)
 	public List<UserOutputList> listTeachers(HttpServletRequest req, @RequestBody(required = false) UserInputSearch search) {											
-		authorization.auth(userRepo, req, Permissions.ADM, "Sem permissão", HttpStatus.UNAUTHORIZED);		
+		authorization.auth(userRepo, req, Permissions.ADM);		
 		return userGeneralServices.listByRole(Role.TEACHER, search);
 	}
 	
@@ -174,7 +174,7 @@ public class UserController {
 	@GetMapping("/public_profile/{uuid}")
 	@ResponseStatus(HttpStatus.OK)
 	public UserOutputPublic publicProfile(HttpServletRequest req, @PathVariable String uuid) {
-		authorization.auth(userRepo, req, Permissions.ADM_PROF_STUDENT, "Sem Permissão", HttpStatus.UNAUTHORIZED);
+		authorization.auth(userRepo, req, Permissions.ADM_PROF_STUDENT);
 		return userGeneralServices.publicProfile(uuid);
 	}
 	
@@ -193,7 +193,7 @@ public class UserController {
 	@GetMapping("/private_profile/{uuid}")
 	@ResponseStatus(HttpStatus.OK)
 	public UserOutputComplete profile(HttpServletRequest req, @PathVariable String uuid) {
-		User loggedUser = authorization.auth(userRepo, req, Permissions.ADM_PROF_STUDENT, "Sem Permissão", HttpStatus.UNAUTHORIZED);
+		User loggedUser = authorization.auth(userRepo, req, Permissions.ADM_PROF_STUDENT);
 		return userGeneralServices.profile(uuid, loggedUser);
 	}
 	
@@ -204,7 +204,7 @@ public class UserController {
 	@ApiResponses(value = {
 			@ApiResponse(code = 201, message = "O Treino foi atribuído ao aluno. Sem retorno"),
 			@ApiResponse(code = 400, response = Problem.class, message = "Caso haja campos preechidos incorretamente, serão retornadas mensagens de erro para cada campo incorreto com o nome e descrição do mesmo"),		
-			@ApiResponse(code = 401, response = StatusMessage.class, message = "O token passado é inválido ou não possui a permissão para acessar este recurso. Este recurso só pode ser acessado pela academia ou professor"),			
+			@ApiResponse(code = 403, response = StatusMessage.class, message = "O token passado é inválido ou não possui a permissão para acessar este recurso. Este recurso só pode ser acessado pela academia ou professor"),			
 			@ApiResponse(code = 404, response = StatusMessage.class, message = "Retorna este código caso o usuário não seja encontrado no sistema"),
 			@ApiResponse(code = 500, message = "Houve algum erro no processamento da requisição") })	
 	@ApiImplicitParam(name = "Authorization", 
@@ -213,7 +213,7 @@ public class UserController {
 	@PostMapping("/exercises/{uuid}")
 	@ResponseStatus(HttpStatus.CREATED)
 	public void registerExercises(HttpServletRequest req, @Valid @RequestBody ExerciseInputRegister exerciseInputRegister,@PathVariable String uuid) {
-		authorization.auth(userRepo, req, Permissions.ADM_PROF, "Sem Permissão", HttpStatus.UNAUTHORIZED);
+		authorization.auth(userRepo, req, Permissions.ADM_PROF);
 		exerciseServices.register(exerciseInputRegister, uuid);
 	}
 	
@@ -223,7 +223,7 @@ public class UserController {
 			@Authorization(value = "JWT") })
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, response = ExerciseOutputComplete.class, message = "Retorna a lista de treinos"),
-			@ApiResponse(code = 401, response = StatusMessage.class, message = "O token passado é inválido ou não possui a permissão para acessar este recurso. Este recurso só pode ser acessado pela academia, professor. Um aluno só pode aceessar sua própria lista de treino"),
+			@ApiResponse(code = 403, response = StatusMessage.class, message = "O token passado é inválido ou não possui a permissão para acessar este recurso. Este recurso só pode ser acessado pela academia, professor. Um aluno só pode aceessar sua própria lista de treino"),
 			@ApiResponse(code = 404, response = StatusMessage.class, message = "Retorna este código caso o usuário não seja encontrado no sistema"),
 			@ApiResponse(code = 500, message = "Houve algum erro no processamento da requisição") })	
 	@ApiImplicitParam(name = "Authorization", 
@@ -232,7 +232,7 @@ public class UserController {
 	@GetMapping("/exercises/{uuid}")
 	@ResponseStatus(HttpStatus.OK)
 	public ExerciseOutputComplete exercises(HttpServletRequest req, @PathVariable String uuid) {
-		User loggedUser = authorization.auth(userRepo, req, Permissions.ADM_PROF_STUDENT, "Sem Permissão", HttpStatus.UNAUTHORIZED);
+		User loggedUser = authorization.auth(userRepo, req, Permissions.ADM_PROF_STUDENT);
 		return exerciseServices.getExercises(loggedUser, uuid);
 	}
 	

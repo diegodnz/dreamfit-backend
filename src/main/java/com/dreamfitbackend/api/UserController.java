@@ -137,8 +137,9 @@ public class UserController {
 	required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
 	@GetMapping("/students")
 	@ResponseStatus(HttpStatus.OK)
-	public List<UserOutputList> listStudents(HttpServletRequest req, @RequestParam(name = "type", required = false) String type,
-																	 @RequestParam(name = "search", required = false) String search) {
+	public List<UserOutputList> listStudents(HttpServletRequest req, 
+			@RequestParam(name = "type", required = false) @ApiParam(value = "Tipo da busca (Ex: Buscar por nome, buscar por cpf...)", allowableValues = "Nome, Cpf, Email") String type,
+			@RequestParam(name = "search", required = false) @ApiParam(value = "O texto da busca (Ex: Diego, 13958473844...)") String search) {
 		authorization.auth(userRepo, req, Permissions.ADM_PROF);	
 		return userGeneralServices.listByRole(Role.STUDENT, type, search);
 	}
@@ -158,8 +159,9 @@ public class UserController {
 	required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
 	@GetMapping("/teachers")
 	@ResponseStatus(HttpStatus.OK)
-	public List<UserOutputList> listTeachers(HttpServletRequest req, @RequestParam(name = "type", required = false) @ApiParam(value = "Tipo da busca (Ex: Buscar por nome, buscar por cpf...)", allowableValues = "Nome, Cpf, Email") String type,
-			 														 @RequestParam(name = "search", required = false) @ApiParam(value = "O texto da busca (Ex: Diego, 13958473844...)") String search) {
+	public List<UserOutputList> listTeachers(HttpServletRequest req, 
+			@RequestParam(name = "type", required = false) @ApiParam(value = "Tipo da busca (Ex: Buscar por nome, buscar por cpf...)", allowableValues = "Nome, Cpf, Email") String type,	 														 
+			@RequestParam(name = "search", required = false) @ApiParam(value = "O texto da busca (Ex: Diego, 13958473844...)") String search) {
 		authorization.auth(userRepo, req, Permissions.ADM);		
 		return userGeneralServices.listByRole(Role.TEACHER, type, search);
 	}

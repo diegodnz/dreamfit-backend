@@ -136,7 +136,6 @@ public class UserController {
 	@GetMapping("/students")
 	@ResponseStatus(HttpStatus.OK)
 	public List<UserOutputList> listStudents(HttpServletRequest req, @RequestBody(required = false) UserInputSearch search) {
-		System.out.println(req);
 		System.out.println(search.getType());
 		System.out.println(search.getSearch());
 		authorization.auth(userRepo, req, Permissions.ADM_PROF);	

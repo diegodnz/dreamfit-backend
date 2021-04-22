@@ -15,9 +15,15 @@ public interface ClassRepository extends JpaRepository<Class, Long> {
 	
 	@Query(value = "SELECT COUNT(*)"
 			+ "FROM students_classes as relation INNER JOIN classes as class ON class.id = relation.class_id "
-			+ "WHERE relation.user_id = :user_id AND class.start_date BETWEEN :start_day AND :end_day",
+			+ "WHERE relation.user_id = :user_id AND class.start_date >= :start_day AND class.start_date < :end_day",
 			nativeQuery = true)
 	Integer getUserClasses(@Param("user_id") Long userId, @Param("start_day") LocalDateTime startDay, @Param("end_day") LocalDateTime endDay);
+	
+	@Query(value = "SELECT COUNT(*)"
+			+ "FROM classes "
+			+ "WHERE class.start_date >= :start_day AND class.start_date < :end_day",
+			nativeQuery = true)
+	List<Class> getByDate(@Param("start_day") LocalDateTime startDay, @Param("end_day") LocalDateTime endDay);
 	
 	@Query(value = "SELECT class_id "
 			+ "FROM students_classes "

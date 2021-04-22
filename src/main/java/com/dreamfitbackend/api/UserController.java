@@ -135,8 +135,11 @@ public class UserController {
 	required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
 	@GetMapping("/students")
 	@ResponseStatus(HttpStatus.OK)
-	public List<UserOutputList> listStudents(HttpServletRequest req, @RequestBody(required = false) UserInputSearch search) {	
-		authorization.auth(userRepo, req, Permissions.ADM_PROF);		
+	public List<UserOutputList> listStudents(HttpServletRequest req, @RequestBody(required = false) UserInputSearch search) {
+		System.out.println(req);
+		System.out.println(search.getType());
+		System.out.println(search.getSearch());
+		authorization.auth(userRepo, req, Permissions.ADM_PROF);	
 		return userGeneralServices.listByRole(Role.STUDENT, search);
 	}
 	

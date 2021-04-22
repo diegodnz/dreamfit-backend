@@ -80,6 +80,26 @@ public class UserGeneralServices {
 	public void register(UserInputRegister userInputRegister) {
 		List<Field> errorFields = new ArrayList<>();
 		
+		if (userInputRegister.getWeight() > 999) {
+			errorFields.add(new Field("weight", "Peso não pode exceder 999"));
+		}
+		
+		if (userInputRegister.getArmMeasurement() > 999) {
+			errorFields.add(new Field("arm_measurement", "Medida não pode exceder 999"));
+		}
+		
+		if (userInputRegister.getLegMeasurement() > 999) {
+			errorFields.add(new Field("leg_measurement", "Medida não pode exceder 999"));
+		}
+		
+		if (userInputRegister.getHipMeasurement() > 999) {
+			errorFields.add(new Field("hip_measurement", "Medida não pode exceder 999"));
+		}
+		
+		if (userInputRegister.getBellyMeasurement() > 999) {
+			errorFields.add(new Field("belly_measurement", "Medida não pode exceder 999"));
+		}
+		
 		User userCpf = userRepo.findByCpf(userInputRegister.getCpf());
 		if (userCpf != null) {
 			errorFields.add(new Field("cpf", "Cpf já existente"));

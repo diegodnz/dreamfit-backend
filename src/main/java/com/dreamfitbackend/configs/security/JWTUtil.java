@@ -52,7 +52,8 @@ public class JWTUtil {
 	
 	public User verifyToken(UserRepository userRepo , HttpServletRequest req, List<Integer> roles) {
 		try {
-			String token = (String)req.getHeader("Authorization").substring(7);	
+			String token = (String)req.getHeader("Authorization").substring(7);
+			System.out.println(token);
 			return validToken(userRepo, token, roles);
 		} catch (MessageException me) {
 			throw me;
@@ -70,7 +71,10 @@ public class JWTUtil {
 				Integer roleToken = claims.get("role", Integer.class);
 				Date expirationDate = claims.getExpiration();
 				Date now = new Date(System.currentTimeMillis());
- 				if (expirationDate != null && now.after(expirationDate) || user == null) {
+ 				if (expirationDate != null && now.after(expirationDate) || user == null) { 					
+ 					System.out.println("expirado");
+ 					System.out.println(now);
+ 					System.out.println(expirationDate); 					
 					throw new MessageException("Faça login", HttpStatus.FORBIDDEN);
 				} else if (!roles.contains(roleToken)){
 					throw new MessageException("Sem permissão", HttpStatus.FORBIDDEN);

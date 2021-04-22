@@ -1,6 +1,7 @@
 CREATE TABLE classes(
 	id BIGSERIAL NOT NULL PRIMARY KEY,
 	class_name VARCHAR(255) NOT NULL,
+	type VARCHAR(255) NOT NULL,
 	start_date TIMESTAMP NOT NULL,
 	end_date TIMESTAMP NOT NULL,
 	filled_vacancies INTEGER NOT NULL,

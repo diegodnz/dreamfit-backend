@@ -146,13 +146,13 @@ public class UserGeneralServices {
 	            helper.setText(String.format("<h>Use este link para recuperar sua senha: <a href=%s>Clique aqui</a></h>", "http://localhost:8080/users/recovery-token/" + token), true);
 	            mailSender.send(mail);	
 	            userRepo.setResetToken(email, token);
-				return new StatusMessage(HttpStatus.ACCEPTED.value(), "E-mail enviado com sucesso");
+				return new StatusMessage(HttpStatus.OK.value(), "E-mail enviado com sucesso");
             } catch (Exception e) {            	       
-            	return new StatusMessage(HttpStatus.BAD_REQUEST.value(), "Erro ao enviar e-mail, tente novamente");
+            	throw new MessageException("Erro ao enviar e-mail, tente novamente", HttpStatus.BAD_REQUEST);
             }
 			
 		} else {			
-			return new StatusMessage(HttpStatus.BAD_REQUEST.value(), "Email não cadastrado no sistema");
+			throw new MessageException("Email não cadastrado no sistema", HttpStatus.BAD_REQUEST);
 		}
             
 
@@ -184,7 +184,7 @@ public class UserGeneralServices {
 			userRepo.save(user);				
 			return new StatusMessage(HttpStatus.OK.value(), "Senha alterada!");
 		} else {
-			return new StatusMessage(HttpStatus.BAD_REQUEST.value(), "Senhas não coincidem");
+			throw new MessageException("Senhas não coincidem", HttpStatus.BAD_REQUEST);
 		}
 
 	}
@@ -261,10 +261,8 @@ public class UserGeneralServices {
 			throw new MessageException("Usuário não encontrado", HttpStatus.NOT_FOUND);
 		}
 		
-		if (loggedUser.getRole_user() == Role.STUDENT) {
-			if (loggedUser != user) {
-				throw new MessageException("Não é possivel acessar o perfil privado de outro aluno", HttpStatus.UNAUTHORIZED);
-			}
+		if (loggedUser.getRole_user() == Role.STUDENT && loggedUser != user) {			
+			throw new MessageException("Não é possivel acessar o perfil privado de outro aluno", HttpStatus.UNAUTHORIZED);			
 		}
 		
 		UserOutputComplete userProfile = new UserOutputComplete();

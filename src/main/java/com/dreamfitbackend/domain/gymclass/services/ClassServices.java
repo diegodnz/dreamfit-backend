@@ -38,16 +38,23 @@ public class ClassServices {
 			throw new MessageException("Aula não encontrada", HttpStatus.BAD_REQUEST);
 		}
 		
-		LocalDateTime nowPlusTenMin = LocalDateTime.of(LocalDate.now(), LocalTime.now()).plus(10, ChronoUnit.MINUTES);
-		if (gymClass.getDate().isAfter(nowPlusTenMin)) {
+		LocalDateTime nowMinusTenMin = LocalDateTime.of(LocalDate.now(), LocalTime.now()).minus(10, ChronoUnit.MINUTES);
+		System.out.println(gymClass.getStart_date());
+		System.out.println(nowMinusTenMin);
+		if (gymClass.getStart_date().isBefore(nowMinusTenMin)) {
 			throw new MessageException("Só é possível agendar aulas com até 10 minutos a partir do horário de início", HttpStatus.BAD_REQUEST);
 		}
 		
-		if (gymClass.getTotalVacancies() >= gymClass.getFilledVacancies()) {
+		if (gymClass.getTotalVacancies() <= gymClass.getFilledVacancies()) {
 			throw new MessageException("Não há vagas para esta aula", HttpStatus.BAD_REQUEST);
 		}
 		
-		Integer schedule = classRepo.getUserClasses(user.getId(), new Date(System.currentTimeMillis())); // TODO Tá errado, tem q checar o horário da aula
+		LocalDateTime startDay = gymClass.getStart_date().withHour(0).withMinute(0);
+		LocalDateTime endDay = gymClass.getStart_date().withHour(0).withMinute(0).plusDays(1);
+		Integer schedule = classRepo.getUserClasses(user.getId(), startDay, endDay);
+		System.out.println(startDay);
+		System.out.println(endDay);
+		System.out.println(schedule);
 		if (schedule > 1) {
 			throw new MessageException("Você só pode agendar 2 aulas no mesmo dia", HttpStatus.BAD_REQUEST);
 		}
@@ -60,7 +67,7 @@ public class ClassServices {
 		user.addClassStudent(gymClass);
 		classRepo.save(gymClass);	
 		userRepo.save(user);
-		return new StatusMessage(200, "Agendamento feito com sucesso para " + gymClass.getClassName() + " às " + gymClass.getDate().getHour() + ":" + gymClass.getDate().getMinute());
+		return new StatusMessage(200, "Agendamento feito com sucesso para " + gymClass.getClassName() + " às " + gymClass.getStart_date().getHour() + ":" + gymClass.getStart_date().getMinute());
 	}
 
 }

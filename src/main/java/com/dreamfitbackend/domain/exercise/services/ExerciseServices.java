@@ -58,7 +58,7 @@ public class ExerciseServices {
 			throw new MessageException("Usuário não encontrado", HttpStatus.NOT_FOUND);
 		}
 		
-		if (user.getRole_user() == Role.STUDENT && user != loggedUser) {
+		if (loggedUser.getRole_user() == Role.STUDENT && user != loggedUser) {
 			throw new MessageException("Sem permissão", HttpStatus.UNAUTHORIZED);
 		}
 		

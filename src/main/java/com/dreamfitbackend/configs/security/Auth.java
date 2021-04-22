@@ -21,7 +21,7 @@ public class Auth {
 	public User auth(UserRepository userRepo, HttpServletRequest req, List<Integer> permissions, String message, HttpStatus error) {
 		User user = jwtUtil.verifyToken(userRepo, req, permissions);
 		if (user == null) {
-			throw new MessageException(message, error);
+			throw new MessageException("Faça login", HttpStatus.FORBIDDEN);
 		}
 		return user;
 	}

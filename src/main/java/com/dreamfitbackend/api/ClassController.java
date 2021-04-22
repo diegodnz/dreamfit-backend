@@ -58,7 +58,7 @@ public class ClassController {
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, response = StatusMessage.class, message = "Aula agendada com sucesso"),
 			@ApiResponse(code = 400, response = StatusMessage.class, message = "Caso haja algum impedimento, será retornada a mensagem de erro descrevendo-o"),
-			@ApiResponse(code = 401, response = StatusMessage.class, message = "O token passado é inválido ou não possui a permissão para acessar este recurso. Este recurso só pode ser acessado por Professor ou Aluno"),			
+			@ApiResponse(code = 403, response = StatusMessage.class, message = "O token passado é inválido ou não possui a permissão para acessar este recurso. Este recurso só pode ser acessado por Professor ou Aluno"),			
 			@ApiResponse(code = 500, message = "Houve algum erro no processamento da requisição") })	
 	@ApiImplicitParam(name = "Authorization", 
 	value = "Um Bearer Token deve ser passado no header 'Authorization'. \nEx: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0ZSJ9.7g5IV9YbjporuxChCooCAgHxIibCz-Yh3Yq3qIn0dsY'", 
@@ -66,7 +66,7 @@ public class ClassController {
 	@PostMapping("/schedule/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public StatusMessage makeAppointment(HttpServletRequest req, @PathVariable Long id) {
-		User user = authorization.auth(userRepo, req, Permissions.PROF_STUDENT, "Somente usuários da academia podem marcar aulas", HttpStatus.FORBIDDEN);		
+		User user = authorization.auth(userRepo, req, Permissions.PROF_STUDENT);		
 		return classServices.makeAppointment(id, user);
 	}
 

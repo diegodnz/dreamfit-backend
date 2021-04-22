@@ -128,7 +128,7 @@ public class UserGeneralServices {
 			throw new MessageException("Senha incorreta", HttpStatus.BAD_REQUEST);
 		} else {
 			String token = jwtUtil.generateToken(user.getCpf(), user.getRole_user().getCod());
-			return new CredentialsOutput(token);			
+			return new CredentialsOutput(token, user.getUuid());			
 		}
 	}
 	

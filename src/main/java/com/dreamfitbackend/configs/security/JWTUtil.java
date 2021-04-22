@@ -97,7 +97,7 @@ public class JWTUtil {
 			if (user != null && expirationDate != null && now.before(expirationDate)) {
 				long diff = expirationDate.getTime() - now.getTime();
 				if (TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) < 7) {
-					return new CredentialsOutput(generateToken(cpf, roleToken));
+					return new CredentialsOutput(generateToken(cpf, roleToken), user.getUuid());
 				}
 				System.out.println(now);
 				System.out.println(expirationDate);

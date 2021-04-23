@@ -43,6 +43,8 @@ public class Class implements Serializable {
 	
 	private String className;
 	
+	private String type;
+	
 	private LocalDateTime startDate;
 	
 	private LocalDateTime endDate;
@@ -53,8 +55,9 @@ public class Class implements Serializable {
 	
 	public Class() {}
 
-	public Class(String className, LocalDateTime startDate, LocalDateTime endDate, Integer filledVacancies, Integer totalVacancies) {
+	public Class(String className, String type, LocalDateTime startDate, LocalDateTime endDate, Integer filledVacancies, Integer totalVacancies) {
 		this.className = className;
+		this.type = type;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.filledVacancies = filledVacancies;
@@ -80,6 +83,14 @@ public class Class implements Serializable {
 
 	public void setClassName(String className) {
 		this.className = className;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public LocalDateTime getStartDate() {

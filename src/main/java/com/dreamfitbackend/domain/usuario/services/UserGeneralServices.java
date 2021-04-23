@@ -191,11 +191,7 @@ public class UserGeneralServices {
 		}
 		
 		String tokenUsuario = user.getTokenReset();
-		Date expiration = claims.getExpiration();
-		
-		System.out.println(tokenUsuario);
-		System.out.println(token);
-		
+		Date expiration = claims.getExpiration();		
 		if (tokenUsuario == null || !tokenUsuario.equals(token) || expiration == null || expiration.before(new Date(System.currentTimeMillis()))) {
 			throw new MessageException("Token expirado ou inválido", HttpStatus.BAD_REQUEST);
 		}

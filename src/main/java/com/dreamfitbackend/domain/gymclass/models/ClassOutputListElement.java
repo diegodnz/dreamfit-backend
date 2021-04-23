@@ -3,29 +3,53 @@ package com.dreamfitbackend.domain.gymclass.models;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import io.swagger.annotations.ApiModelProperty;
+
 public class ClassOutputListElement {
 	
+	@ApiModelProperty(position = 1)
+	private Long id;
+	
+	@ApiModelProperty(position = 2, example = "Treino de Musculação")
 	private String className;
 	
+	@ApiModelProperty(position = 3, example = "Musculação")
+	private String type;;
+
+	@ApiModelProperty(position = 4)
 	private LocalDateTime startDate;
 	
+	@ApiModelProperty(position = 5)
 	private LocalDateTime endDate;
 	
+	@ApiModelProperty(position = 6)
 	private Integer filled_vacancies;
 	
+	@ApiModelProperty(position = 7)
 	private Integer total_vacancies;
 	
+	@ApiModelProperty(position = 8)
 	private boolean scheduled;
 
 	public ClassOutputListElement() {}
 
-	public ClassOutputListElement(String className, LocalDateTime startDate, LocalDateTime endDate,
+	public ClassOutputListElement(Long id, String className, String type,LocalDateTime startDate, LocalDateTime endDate,
 			Integer filled_vacancies, Integer total_vacancies) {
+		this.id = id;
 		this.className = className;
+		this.type = type;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.filled_vacancies = filled_vacancies;
 		this.total_vacancies = total_vacancies;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getClassName() {
@@ -34,6 +58,14 @@ public class ClassOutputListElement {
 
 	public void setClassName(String className) {
 		this.className = className;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public LocalDateTime getStartDate() {

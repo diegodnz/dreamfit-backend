@@ -180,9 +180,12 @@ public class UserGeneralServices {
 	
 	public StatusMessage resetPassword(String token, String newPassword, String confirmNewPassword) {
 		Claims claims = jwtUtil.getClaims(token);
+		if (claims == null) {
+			throw new MessageException("Token expirado ou inválido", HttpStatus.BAD_REQUEST);
+		}
+
 		String cpf = claims.getSubject();		
-		User user = userRepo.findByCpf(cpf);
-		
+		User user = userRepo.findByCpf(cpf);		
 		if (user == null) {
 			throw new MessageException("Token expirado ou inválido", HttpStatus.BAD_REQUEST);
 		}

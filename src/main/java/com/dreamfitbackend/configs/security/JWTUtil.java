@@ -26,9 +26,6 @@ public class JWTUtil {
 	
 	@Value("${jwt.secret}")
 	private String secret;
-	
-	@Value("${jwt.passwordSecret}")
-	private String passwordSecret;
 
 	@Value("${jwt.expiration}")
 	private Long expiration;
@@ -44,9 +41,10 @@ public class JWTUtil {
 	
 	public String generatePasswordToken(String cpf, Long expirationTime) {
 		return Jwts.builder()
-				.setSubject(cpf)		
+				.setSubject(cpf)
+				.claim("reset_password", true)
 				.setExpiration(new Date(System.currentTimeMillis() + expirationTime))
-				.signWith(SignatureAlgorithm.HS512, passwordSecret.getBytes())
+				.signWith(SignatureAlgorithm.HS512, secret.getBytes())
 				.compact();
 	}
 	
@@ -99,13 +97,12 @@ public class JWTUtil {
 				if (TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) < 7) {
 					return new CredentialsOutput(generateToken(cpf, roleToken), user.getUuid());
 				}
-//				System.out.println(now);
-//				System.out.println(expirationDate);
-//				System.out.println(TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS));
 				throw new MessageException("Token válido", HttpStatus.ACCEPTED);
-			}				
+			}			
 		} catch (MessageException me) {
-			throw me;
+			if (me.getStatus().equals(HttpStatus.ACCEPTED)) {
+				throw me;
+			}
 		} catch (Exception e) {}
 		throw new MessageException("Token inválido", HttpStatus.BAD_REQUEST);
 	}
@@ -129,8 +126,7 @@ public class JWTUtil {
 		try {			
 			return Jwts.parser().setSigningKey(secret.getBytes()).parseClaimsJws(token).getBody();
 		}
-		catch (Exception e) {
-			e.printStackTrace();
+		catch (Exception e) {			
 			return null;
 		}
 	}

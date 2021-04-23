@@ -90,5 +90,28 @@ public class ClassServices {
 		}
 		return new StatusMessage(200, "Agendamento feito com sucesso para " + gymClass.getClassName() + " às " + hour + ":" + minutes);
 	}
+	
+	public StatusMessage deleteAppointment(Long id, User user) {
+		Class gymClass = classRepo.getById(id);
+		
+		if (gymClass == null) {
+			throw new MessageException("Aula não encontrada", HttpStatus.BAD_REQUEST);
+		}
+		
+		if (classRepo.verifyRelation(user.getId(), gymClass.getId()) == null) {
+			throw new MessageException("Você não está agendado para esta aula", HttpStatus.BAD_REQUEST);
+		}
+		
+		LocalDateTime now = LocalDateTime.of(LocalDate.now(), LocalTime.now());
+		if (gymClass.getStartDate().isBefore(now)) {
+			throw new MessageException("Só é possível cancelar o agendamento antes da aula começar", HttpStatus.BAD_REQUEST);
+		} 
+		
+		gymClass.removeStudent(user);
+		user.removeClassStudent(gymClass);
+		classRepo.save(gymClass);
+		userRepo.save(user);
+		return new StatusMessage(200, "Agendamento cancelado");		
+	}
 
 }

@@ -41,7 +41,7 @@ public class ClassServices {
 		List<Class> todayClasses = classRepo.getByDate(startDay, endDay);
 		ClassOutputList classesOutput = new ClassOutputList(new ArrayList<ClassOutputListElement>());
 		for (Class gymClass : todayClasses) {
-			ClassOutputListElement classElement = new ClassOutputListElement(gymClass.getClassName(), gymClass.getStartDate(), gymClass.getEndDate(), gymClass.getFilledVacancies(), gymClass.getTotalVacancies());
+			ClassOutputListElement classElement = new ClassOutputListElement(gymClass.getId() ,gymClass.getClassName(), gymClass.getType() ,gymClass.getStartDate(), gymClass.getEndDate(), gymClass.getFilledVacancies(), gymClass.getTotalVacancies());
 			boolean scheduled = classRepo.verifyRelation(user.getId(), gymClass.getId()) != null;
 			classElement.setScheduled(scheduled);
 			classesOutput.addClass(classElement);

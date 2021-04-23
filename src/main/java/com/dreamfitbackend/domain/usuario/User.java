@@ -94,6 +94,10 @@ public class User implements Serializable {
 	public void addClassStudent(Class gymClass) {
 		this.classesStudent.add(gymClass);
 	}
+	
+	public void removeClassStudent(Class gymClass) {
+		this.classesStudent.remove(gymClass);
+	}
 
 	public Long getId() {
 		return id;

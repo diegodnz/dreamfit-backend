@@ -65,8 +65,15 @@ public class Class implements Serializable {
 	}
 	
 	public void addStudent(User user) {		
-		this.students.add(user);
-		this.filledVacancies += 1;
+		if (this.students.add(user)) {
+			this.filledVacancies += 1;
+		}		
+	}
+	
+	public void removeStudent(User user) {
+		if (this.students.remove(user)) {
+			this.filledVacancies -= 1;
+		}
 	}
 
 	public Long getId() {

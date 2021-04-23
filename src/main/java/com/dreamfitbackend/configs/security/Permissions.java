@@ -14,5 +14,7 @@ public class Permissions {
 	public static final List<Integer> ADM_PROF_STUDENT = Arrays.asList(Role.ADMIN.getCod(), Role.TEACHER.getCod(), Role.STUDENT.getCod());
 	
 	public static final List<Integer> PROF_STUDENT = Arrays.asList(Role.TEACHER.getCod(), Role.STUDENT.getCod());
-
+	
+	public static final List<Integer> STUDENT = Arrays.asList(Role.STUDENT.getCod());
+	
 }

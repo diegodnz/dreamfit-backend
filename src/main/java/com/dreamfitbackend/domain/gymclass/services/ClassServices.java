@@ -38,8 +38,9 @@ public class ClassServices {
 	}
 	
 	public ClassOutputList getClasses(User user) {
-		LocalDateTime startDay = LocalDateTime.now().withHour(0).withMinute(0);
-		LocalDateTime endDay = LocalDateTime.now().withHour(0).withMinute(0).plusDays(1);
+		ZonedDateTime nowBr = ZonedDateTime.now(ZoneId.of("America/Sao_Paulo"));
+		LocalDateTime startDay = nowBr.toLocalDateTime().withHour(0).withMinute(0);
+		LocalDateTime endDay = nowBr.toLocalDateTime().withHour(0).withMinute(0).plusDays(1);
 		List<Class> todayClasses = classRepo.getByDate(startDay, endDay);
 		ClassOutputList classesOutput = new ClassOutputList(new ArrayList<ClassOutputListElement>());
 		for (Class gymClass : todayClasses) {

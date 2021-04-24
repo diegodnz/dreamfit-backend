@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import com.dreamfitbackend.domain.gymclass.Class;
 import com.dreamfitbackend.domain.user_measures.UserMeasures;

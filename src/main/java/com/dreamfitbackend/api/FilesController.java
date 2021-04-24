@@ -1,33 +1,24 @@
 package com.dreamfitbackend.api;
 
 
-import java.util.UUID;
-
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.dreamfitbackend.configs.exceptions.MessageException;
-import com.dreamfitbackend.configs.exceptions.Problem;
 import com.dreamfitbackend.configs.generalDtos.StatusMessage;
 import com.dreamfitbackend.configs.security.Auth;
 import com.dreamfitbackend.configs.security.Permissions;
 import com.dreamfitbackend.configs.storage.AmazonClient;
 import com.dreamfitbackend.domain.usuario.User;
 import com.dreamfitbackend.domain.usuario.UserRepository;
-import com.dreamfitbackend.domain.usuario.enums.Role;
-import com.dreamfitbackend.domain.usuario.models.UserInputUuid;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;

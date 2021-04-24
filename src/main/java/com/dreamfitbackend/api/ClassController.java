@@ -61,7 +61,7 @@ public class ClassController {
 	@PostMapping("/schedule/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public StatusMessage makeAppointment(HttpServletRequest req, @PathVariable Long id) {
-		User user = authorization.auth(userRepo, req, Permissions.STUDENT);		
+		User user = authorization.auth(userRepo, req, Permissions.STUDENT);	
 		return classServices.makeAppointment(id, user);
 	}
 	

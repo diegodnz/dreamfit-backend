@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,6 +29,7 @@ import com.dreamfitbackend.configs.security.Permissions;
 import com.dreamfitbackend.domain.exercise.models.ExerciseInputRegister;
 import com.dreamfitbackend.domain.exercise.models.ExerciseOutputComplete;
 import com.dreamfitbackend.domain.exercise.services.ExerciseServices;
+import com.dreamfitbackend.domain.user_measures.models.UserMeasuresInputUpdate;
 import com.dreamfitbackend.domain.usuario.User;
 import com.dreamfitbackend.domain.usuario.UserRepository;
 import com.dreamfitbackend.domain.usuario.enums.Role;
@@ -257,6 +259,25 @@ public class UserController {
 	public CredentialsOutput refreshToken(HttpServletRequest req) {
 		CredentialsOutput newToken = jwtUtil.refreshToken(userRepo, req);
 		return newToken;
+	}
+	
+	
+	// ** Atualizar medidas do aluno **
+	@ApiOperation(value = "Atualizar medidas do aluno", notes = "Esta operação permite que um professor atualize as medidas de um aluno", authorizations = {
+			@Authorization(value = "JWT") })
+	@ApiResponses(value = {
+			@ApiResponse(code = 204, response = StatusMessage.class, message = "As medidas foram atualizadas"),
+			@ApiResponse(code = 400, response = StatusMessage.class, message = "O uuid do usuário informado é inválido"),
+			@ApiResponse(code = 403, response = StatusMessage.class, message = "O token passado é inválido ou não possui a permissão para acessar este recurso. Este recurso só pode ser acessado por um professor."),
+			@ApiResponse(code = 500, message = "Houve algum erro no processamento da requisição") })	
+	@ApiImplicitParam(name = "Authorization",
+		value = "Um Bearer Token deve ser passado no header 'Authorization'. \nEx: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0ZSJ9.7g5IV9YbjporuxChCooCAgHxIibCz-Yh3Yq3qIn0dsY'",  
+		required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
+	@PutMapping("/measures")
+	@ResponseStatus(HttpStatus.OK)
+	public StatusMessage updateMeasures(HttpServletRequest req, @Valid @RequestBody UserMeasuresInputUpdate userMeasures) {
+		authorization.auth(userRepo, req, Permissions.PROF);
+		return userGeneralServices.updateMeasures(userMeasures);
 	}
 	
 }

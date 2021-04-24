@@ -64,16 +64,12 @@ public class Class implements Serializable {
 		this.totalVacancies = totalVacancies;
 	}
 	
-	public void addStudent(User user) {		
-		if (this.students.add(user)) {
-			this.filledVacancies += 1;
-		}		
+	public void addStudent(User user) {			
+		this.filledVacancies += 1;			
 	}
 	
-	public void removeStudent(User user) {
-		if (this.students.remove(user)) {
-			this.filledVacancies -= 1;
-		}
+	public void removeStudent(User user) {		
+		this.filledVacancies -= 1;		
 	}
 
 	public Long getId() {

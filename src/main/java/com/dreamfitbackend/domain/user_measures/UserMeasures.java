@@ -28,17 +28,30 @@ public class UserMeasures implements Serializable {
 	private User user;
 	
 	@NotNull
-	LocalDateTime date;
+	private LocalDateTime date;
 	
-	Float weight;
+	private Float weight;
 	
-	Float arm_measurement;
+	private Float arm_measurement;
 	
-	Float leg_measurement;
+	private Float leg_measurement;
 	
-	Float hip_measurement;
+	private Float hip_measurement;
 	
-	Float belly_measurement;
+	private Float belly_measurement;
+	
+	public UserMeasures() {}
+
+	public UserMeasures(User user, LocalDateTime date, Float weight, Float arm_measurement,
+			Float leg_measurement, Float hip_measurement, Float belly_measurement) {
+		this.user = user;
+		this.date = date;
+		this.weight = weight;
+		this.arm_measurement = arm_measurement;
+		this.leg_measurement = leg_measurement;
+		this.hip_measurement = hip_measurement;
+		this.belly_measurement = belly_measurement;
+	}
 
 	public Long getId() {
 		return id;

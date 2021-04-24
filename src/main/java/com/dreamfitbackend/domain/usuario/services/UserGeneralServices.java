@@ -25,6 +25,7 @@ import com.dreamfitbackend.configs.security.JWTUtil;
 import com.dreamfitbackend.domain.gymclass.ClassRepository;
 import com.dreamfitbackend.domain.user_measures.UserMeasures;
 import com.dreamfitbackend.domain.user_measures.UserMeasuresRepository;
+import com.dreamfitbackend.domain.user_measures.models.UserMeasuresInputUpdate;
 import com.dreamfitbackend.domain.usuario.User;
 import com.dreamfitbackend.domain.usuario.UserRepository;
 import com.dreamfitbackend.domain.usuario.enums.MeasureChange;
@@ -211,15 +212,15 @@ public class UserGeneralServices {
 	private MeasureChange measureChange(Long userId, String measure) {
 		List<Float> userMeasures = new ArrayList<>();
 		if (measure.matches("Weight")) {
-			userMeasures = userRepo.getWeightMeasures(userId);
+			userMeasures = userMeasuresRepo.getWeightMeasures(userId);
 		} else if (measure.matches("Arm")) {
-			userMeasures = userRepo.getArmMeasures(userId);
+			userMeasures = userMeasuresRepo.getArmMeasures(userId);
 		} else if (measure.matches("Leg")) {
-			userMeasures = userRepo.getLegMeasures(userId);
+			userMeasures = userMeasuresRepo.getLegMeasures(userId);
 		} else if (measure.matches("Hip")) {
-			userMeasures = userRepo.getHipMeasures(userId);
+			userMeasures = userMeasuresRepo.getHipMeasures(userId);
 		} else if (measure.matches("Belly")) {
-			userMeasures = userRepo.getBellyMeasures(userId);
+			userMeasures = userMeasuresRepo.getBellyMeasures(userId);
 		}
 		if (userMeasures.size() < 2 || userMeasures.get(0) == userMeasures.get(1)) {
 			return MeasureChange.MANTEVE;
@@ -228,23 +229,25 @@ public class UserGeneralServices {
 			Float oldMeasure = userMeasures.get(1);			
 			if (newMeasure > oldMeasure) {
 				return MeasureChange.AUMENTOU;
-			} else {
+			} else if (newMeasure < oldMeasure){
 				return MeasureChange.DIMINUIU;
+			} else {
+				return MeasureChange.MANTEVE;
 			}
 		}
 	}
 	
 	private Float lastMeasure(Long userId, String measure) {
 		if (measure.matches("Weight")) {
-			return userRepo.getWeight(userId);
+			return userMeasuresRepo.getWeight(userId);
 		} else if (measure.matches("Arm")) {
-			return userRepo.getArmMeasurement(userId);
+			return userMeasuresRepo.getArmMeasurement(userId);
 		} else if (measure.matches("Leg")) {
-			return userRepo.getLegMeasurement(userId);
+			return userMeasuresRepo.getLegMeasurement(userId);
 		} else if (measure.matches("Hip")) {
-			return userRepo.getHipMeasurement(userId);
+			return userMeasuresRepo.getHipMeasurement(userId);
 		} else if (measure.matches("Belly")) {
-			return userRepo.getBellyMeasurement(userId);
+			return userMeasuresRepo.getBellyMeasurement(userId);
 		} else {
 			return null;
 		}
@@ -301,6 +304,17 @@ public class UserGeneralServices {
 		
 		return userProfile;
 		
+	}
+	
+	public StatusMessage updateMeasures(UserMeasuresInputUpdate userMeasuresInput) {
+		User updateUser = userRepo.findByUuid(userMeasuresInput.getUuid());
+		if (updateUser == null) {
+			throw new MessageException("Usuário inválido", HttpStatus.BAD_REQUEST);
+		}
+		UserMeasures userMeasures = new UserMeasures(updateUser, LocalDateTime.now(), userMeasuresInput.getWeight(), userMeasuresInput.getArm_measurement(), 
+				userMeasuresInput.getLeg_measurement(), userMeasuresInput.getHip_measurement(), userMeasuresInput.getBelly_measurement());
+		userMeasuresRepo.save(userMeasures);
+		return new StatusMessage(HttpStatus.OK.value(), "Medidas atualizadas com sucesso!");
 	}
 
 }

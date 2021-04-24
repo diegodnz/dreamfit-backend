@@ -4,6 +4,8 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +73,8 @@ public class ClassServices {
 			throw new MessageException("Não há vagas para esta aula", HttpStatus.BAD_REQUEST);
 		}
 		
-		LocalDateTime nowMinusTenMin = LocalDateTime.of(LocalDate.now(), LocalTime.now()).minus(10, ChronoUnit.MINUTES);
+		ZonedDateTime nowBr = ZonedDateTime.now(ZoneId.of("America/Sao_Paulo"));
+		LocalDateTime nowMinusTenMin = nowBr.toLocalDateTime().minus(10, ChronoUnit.MINUTES);
 		if (gymClass.getStartDate().isBefore(nowMinusTenMin)) {
 			throw new MessageException("Só é possível agendar aulas com até 10 minutos a partir do horário de início", HttpStatus.BAD_REQUEST);
 		}		
@@ -102,10 +105,11 @@ public class ClassServices {
 			throw new MessageException("Você não está agendado para esta aula", HttpStatus.BAD_REQUEST);
 		}
 		
-		LocalDateTime now = LocalDateTime.of(LocalDate.now(), LocalTime.now());
+		ZonedDateTime nowBr = ZonedDateTime.now(ZoneId.of("America/Sao_Paulo"));
+		LocalDateTime now = nowBr.toLocalDateTime();
 		if (gymClass.getStartDate().isBefore(now)) {
 			throw new MessageException("Só é possível cancelar o agendamento antes da aula começar", HttpStatus.BAD_REQUEST);
-		} 
+		}
 		
 		gymClass.removeStudent(user);
 		user.removeClassStudent(gymClass);

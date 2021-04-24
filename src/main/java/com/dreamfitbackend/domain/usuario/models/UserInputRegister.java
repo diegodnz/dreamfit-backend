@@ -55,10 +55,6 @@ public class UserInputRegister {
 	@ApiModelProperty(position = 8)
 	private String phone;
 	
-	@Size(max = 255)
-	@ApiModelProperty(position = 9)
-	private String profilePicture;
-	
 	@ApiModelProperty(position = 10)
 	private Float weight;
 	
@@ -139,14 +135,6 @@ public class UserInputRegister {
 
 	public void setPhone(String phone) {
 		this.phone = phone;
-	}
-
-	public String getProfilePicture() {
-		return profilePicture.trim();
-	}
-
-	public void setProfilePicture(String profilePicture) {
-		this.profilePicture = profilePicture;
 	}
 
 	public Float getWeight() {

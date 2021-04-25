@@ -75,7 +75,7 @@ public class UserController {
 	@ApiOperation(value = "Cadastrar usuário", notes = "Esta operação permite que a academia cadastre um novo aluno ou professor.", authorizations = {
 			@Authorization(value = "JWT") })
 	@ApiResponses(value = {
-			@ApiResponse(code = 201, message = "O usuário foi cadastrado com sucesso. Sem retorno"),
+			@ApiResponse(code = 201, response = UserOutputUuid.class, message = "O usuário foi cadastrado com sucesso. Retorna o uuid do novo usuário"),
 			@ApiResponse(code = 400, response = Problem.class, message = "Caso haja campos preechidos incorretamente, serão retornadas mensagens de erro para cada campo incorreto com o nome e descrição do mesmo"),
 			@ApiResponse(code = 403, response = StatusMessage.class, message = "O token passado é inválido ou não possui a permissão para acessar este recurso. Este recurso só pode ser acessado por ADM"),			
 			@ApiResponse(code = 500, message = "Houve algum erro no processamento da requisição") })	

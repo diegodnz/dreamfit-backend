@@ -30,4 +30,12 @@ public interface ClassRepository extends JpaRepository<Class, Long> {
 			+ "WHERE user_id = :user_id and class_id = :class_id",
 			nativeQuery = true)
 	Long verifyRelation(@Param("user_id") Long userId, @Param("class_id") Long classId);
+	
+	@Query(value = "SELECT * "
+			+ "FROM classes as class "
+			+ "INNER JOIN students_classes as relation ON class.id = relation.class_id "
+			+ "WHERE relation.user_id = :user_id AND class.end_date > :now AND class.start_date >= :start_day AND class.start_date < :end_day "
+			+ "ORDER BY start_date LIMIT 1",
+			nativeQuery = true)
+	Class getNextClass(@Param("user_id") Long userId, @Param("now") LocalDateTime now, @Param("start_day") LocalDateTime startDay, @Param("end_day") LocalDateTime endDay);
 }

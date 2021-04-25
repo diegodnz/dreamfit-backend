@@ -72,13 +72,15 @@ public class User implements Serializable {
 	private Integer fitcoins;
 	
 	private String tokenReset;
+	
+	private String plan;
 
 	public User() {
 		this.uuid = UUID.randomUUID().toString();
 	}
 	
 	public User(String cpf, String email, String name, LocalDate birthDate, String gender, String password,
-			Integer role_user, String phone, String profilePicture) {
+			Integer role_user, String phone, String profilePicture, String plan) {
 		this.uuid = UUID.randomUUID().toString();
 		this.cpf = cpf;
 		this.email = email;
@@ -90,6 +92,7 @@ public class User implements Serializable {
 		this.phone = phone;
 		this.profilePicture = profilePicture;
 		this.fitcoins = 0;
+		this.plan = plan;
 	}
 
 	public void addClassStudent(Class gymClass) {
@@ -202,6 +205,14 @@ public class User implements Serializable {
 
 	public void setFitcoins(Integer fitcoins) {
 		this.fitcoins = fitcoins;
+	}
+
+	public String getPlan() {
+		return plan;
+	}
+
+	public void setPlan(String plan) {
+		this.plan = plan;
 	}
 
 	@Override

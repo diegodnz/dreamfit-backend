@@ -64,11 +64,13 @@ public class Class implements Serializable {
 		this.totalVacancies = totalVacancies;
 	}
 	
-	public void addStudent(User user) {			
+	public void addStudent(User user) {
+		this.students.add(user);
 		this.filledVacancies += 1;			
 	}
 	
-	public void removeStudent(User user) {		
+	public void removeStudent(User user) {
+		this.students.remove(user);
 		this.filledVacancies -= 1;		
 	}
 

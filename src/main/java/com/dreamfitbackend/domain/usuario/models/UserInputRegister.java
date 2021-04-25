@@ -42,17 +42,22 @@ public class UserInputRegister {
 	@ApiModelProperty(position = 5)
 	private String gender;
 	
-	@ValidPassword
+	@NotBlank
+	@Size(max = 255)
 	@ApiModelProperty(position = 6)
+	private String plan;
+	
+	@ValidPassword
+	@ApiModelProperty(position = 7)
 	private String password;
 	
 	@NotNull
-	@ApiModelProperty(position = 7, example = "Aluno", allowableValues = "Professor, Aluno")
+	@ApiModelProperty(position = 8, example = "Aluno", allowableValues = "Professor, Aluno")
     private String role_user;
 	
 	@NotBlank
 	@Size(max = 255)
-	@ApiModelProperty(position = 8)
+	@ApiModelProperty(position = 9)
 	private String phone;
 	
 	@ApiModelProperty(position = 10)
@@ -110,6 +115,14 @@ public class UserInputRegister {
 
 	public void setGender(String gender) {
 		this.gender = gender;
+	}
+
+	public String getPlan() {
+		return plan;
+	}
+
+	public void setPlan(String plan) {
+		this.plan = plan;
 	}
 
 	public String getPassword() {

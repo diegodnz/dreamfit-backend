@@ -22,3 +22,6 @@ amazon.s3.endpoint=
 amazon.s3.default-bucket=
 amazon.aws.access-key-id=
 amazon.aws.access-key-secret=
+
+spring.servlet.multipart.max-file-size=2MB
+spring.servlet.multipart.max-request-size=2MB

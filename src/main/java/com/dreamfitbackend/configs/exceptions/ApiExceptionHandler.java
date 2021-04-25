@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import javax.validation.ConstraintViolationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.dreamfitbackend.configs.generalDtos.StatusMessage;
@@ -26,6 +29,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@Autowired
 	private MessageSource messageSource;
+	
+	@Value("${spring.servlet.multipart.max-file-size}")
+	private String maxFileSize;
 	
 	@ExceptionHandler(MessageException.class)	
 	public ResponseEntity<Object> handleMessage(MessageException ex, WebRequest request) {
@@ -82,6 +88,16 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		problem.setFields(fields);
 		
 		return super.handleExceptionInternal(ex, problem, headers, status, request);
+	}
 	
+	@ExceptionHandler(MultipartException.class)
+	public ResponseEntity<Object> handleFileLimit(MultipartException ex, WebRequest request) {
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		
+		Integer maxSize = Integer.parseInt(maxFileSize.substring(0, maxFileSize.indexOf('B')-1));
+		String maxSizeStr = String.valueOf(maxSize) + maxFileSize.subSequence(maxFileSize.indexOf('B')-1, maxFileSize.indexOf('B')+1);
+		StatusMessage response = new StatusMessage(status.value(), "A imagem excede o limite de " + maxSizeStr);
+		
+		return handleExceptionInternal(ex, response, new HttpHeaders(), status, request);
 	}
 }

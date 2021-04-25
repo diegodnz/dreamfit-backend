@@ -78,7 +78,7 @@ public class UserGeneralServices {
 		return listOutput;
 	}
 	
-	public void register(UserInputRegister userInputRegister) {
+	public String register(UserInputRegister userInputRegister) {
 		List<Field> errorFields = new ArrayList<>();
 		
 		if (userInputRegister.getWeight() > 999) {
@@ -136,6 +136,7 @@ public class UserGeneralServices {
 		
 		userRepo.save(newUser);
 		userMeasuresRepo.save(userMeasures);
+		return newUser.getUuid();
 	}
 	
 	public CredentialsOutput login(CredentialsInput credentialsInput) {

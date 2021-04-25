@@ -71,7 +71,7 @@ public class AmazonClient {
     	if (updateUser == null) {
     		throw new MessageException("Usuário inválido", HttpStatus.BAD_REQUEST);
     	}
-    	if (loggedUser.getRole_user() != Role.ADMIN && loggedUser.getUuid() != uuid) {
+    	if (loggedUser.getRole_user() != Role.ADMIN && loggedUser.getUuid().matches(uuid)) {
     		throw new MessageException("Sem permissão", HttpStatus.FORBIDDEN);
     	}
     	return updateUser;

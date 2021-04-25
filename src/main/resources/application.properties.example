@@ -17,3 +17,8 @@ spring.mail.properties.mail.smtp.starttls.enable=true
 spring.mail.properties.mail.smtp.starttls.required=true
 spring.mail.properties.mail.smtp.ssl.enable=false
 spring.mail.test-connection=true
+
+amazon.s3.endpoint=
+amazon.s3.default-bucket=
+amazon.aws.access-key-id=
+amazon.aws.access-key-secret=

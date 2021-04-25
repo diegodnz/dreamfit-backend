@@ -70,7 +70,7 @@ public class JWTUtil {
 				Date now = new Date(System.currentTimeMillis());
  				if (expirationDate != null && now.after(expirationDate) || user == null) { 										
 					throw new MessageException("Faça login", HttpStatus.FORBIDDEN);
-				} else if (!roles.contains(roleToken)){
+				} else if (!roles.contains(roleToken)){					
 					throw new MessageException("Sem permissão", HttpStatus.FORBIDDEN);
 				} else {
 					return user;

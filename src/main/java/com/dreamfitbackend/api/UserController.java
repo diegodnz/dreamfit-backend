@@ -39,6 +39,7 @@ import com.dreamfitbackend.domain.usuario.models.UserInputRegister;
 import com.dreamfitbackend.domain.usuario.models.UserOutputComplete;
 import com.dreamfitbackend.domain.usuario.models.UserOutputList;
 import com.dreamfitbackend.domain.usuario.models.UserOutputPublic;
+import com.dreamfitbackend.domain.usuario.models.UserOutputUuid;
 import com.dreamfitbackend.domain.usuario.services.UserGeneralServices;
 
 import io.swagger.annotations.Api;
@@ -83,9 +84,9 @@ public class UserController {
 	required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public void register(@Valid @RequestBody UserInputRegister userInputRegister, HttpServletRequest req) {
+	public UserOutputUuid register(@Valid @RequestBody UserInputRegister userInputRegister, HttpServletRequest req) {
 		authorization.auth(userRepo, req, Permissions.ADM);		
-		userGeneralServices.register(userInputRegister);
+		return new UserOutputUuid(userGeneralServices.register(userInputRegister));
 	}
 	
 	

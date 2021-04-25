@@ -3,6 +3,7 @@ package com.dreamfitbackend.domain.usuario.models;
 import java.sql.Date;
 import java.time.LocalDate;
 
+import com.dreamfitbackend.domain.gymclass.models.ClassOutputResume;
 import com.dreamfitbackend.domain.usuario.enums.MeasureChange;
 import com.dreamfitbackend.domain.usuario.enums.Role;
 
@@ -66,6 +67,12 @@ public class UserOutputComplete {
 	
 	@ApiModelProperty(position = 19)
 	private Integer fitcoins;
+	
+	@ApiModelProperty(position = 20)
+	private String plan;
+	
+	@ApiModelProperty(position = 21)
+	private ClassOutputResume nextClass;
 
 	public String getCpf() {
 		return cpf;
@@ -217,6 +224,22 @@ public class UserOutputComplete {
 
 	public void setBellyMeasurementChange(MeasureChange bellyMeasurementChange) {
 		this.bellyMeasurementChange = bellyMeasurementChange;
+	}
+
+	public ClassOutputResume getNextClass() {
+		return nextClass;
+	}
+
+	public void setNextClass(ClassOutputResume nextClass) {
+		this.nextClass = nextClass;
+	}
+
+	public String getPlan() {
+		return plan;
+	}
+
+	public void setPlan(String plan) {
+		this.plan = plan;
 	}
 
 }

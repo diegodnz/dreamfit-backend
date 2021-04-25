@@ -22,7 +22,9 @@ import com.dreamfitbackend.configs.generalDtos.StatusMessage;
 import com.dreamfitbackend.configs.security.CredentialsInput;
 import com.dreamfitbackend.configs.security.CredentialsOutput;
 import com.dreamfitbackend.configs.security.JWTUtil;
+import com.dreamfitbackend.domain.gymclass.Class;
 import com.dreamfitbackend.domain.gymclass.ClassRepository;
+import com.dreamfitbackend.domain.gymclass.models.ClassOutputResume;
 import com.dreamfitbackend.domain.user_measures.UserMeasures;
 import com.dreamfitbackend.domain.user_measures.UserMeasuresRepository;
 import com.dreamfitbackend.domain.user_measures.models.UserMeasuresInputUpdate;
@@ -31,7 +33,6 @@ import com.dreamfitbackend.domain.usuario.UserRepository;
 import com.dreamfitbackend.domain.usuario.enums.MeasureChange;
 import com.dreamfitbackend.domain.usuario.enums.Role;
 import com.dreamfitbackend.domain.usuario.models.UserInputRegister;
-import com.dreamfitbackend.domain.usuario.models.UserInputSearch;
 import com.dreamfitbackend.domain.usuario.models.UserOutputComplete;
 import com.dreamfitbackend.domain.usuario.models.UserOutputList;
 import com.dreamfitbackend.domain.usuario.models.UserOutputPublic;
@@ -165,7 +166,7 @@ public class UserGeneralServices {
 	            MimeMessageHelper helper = new MimeMessageHelper( mail );
 	            helper.setTo(email);
 	            helper.setSubject( "DreamFit - Recuperação de senha" );
-	            helper.setText(String.format("<h>Use este link para recuperar sua senha: <a href=%s>Clique aqui</a></h>", "http://localhost:8080/users/recovery-token/" + token), true);
+	            helper.setText(String.format("<h>Use este link para recuperar sua senha: <a href=%s>Clique aqui</a></h>", "https://dream-fit-q0ulhlgnt-pgsalbuquerque.vercel.app/users/recovery-token/" + token), true);
 	            mailSender.send(mail);	
 	            userRepo.setResetToken(email, token);
 				return new StatusMessage(HttpStatus.OK.value(), "E-mail enviado com sucesso");
@@ -302,6 +303,12 @@ public class UserGeneralServices {
 		userProfile.setLegMeasurement(lastMeasure(userId, "Leg"));
 		userProfile.setHipMeasurement(lastMeasure(userId, "Hip"));
 		userProfile.setBellyMeasurement(lastMeasure(userId, "Belly"));
+		
+		Class nextClass = classRepo.getNextClass(userId, LocalDateTime.now(), LocalDateTime.now().withHour(0).withMinute(0), LocalDateTime.now().withHour(0).withMinute(0).plusDays(1));
+		if (nextClass != null) {
+			ClassOutputResume nextClassOutput = new ClassOutputResume(nextClass.getType(), nextClass.getStartDate().toLocalTime(), nextClass.getEndDate().toLocalTime());
+			userProfile.setNextClass(nextClassOutput);
+		}
 		
 		return userProfile;
 		

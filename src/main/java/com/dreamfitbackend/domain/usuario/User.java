@@ -19,6 +19,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import com.dreamfitbackend.domain.gymclass.Class;
+import com.dreamfitbackend.domain.rewards.Reward;
 import com.dreamfitbackend.domain.user_measures.UserMeasures;
 import com.dreamfitbackend.domain.usuario.enums.Role;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -53,6 +54,9 @@ public class User implements Serializable {
 	
 	@ManyToMany(mappedBy = "students")
 	private Set<Class> classesStudent;
+	
+	@ManyToMany(mappedBy = "users")
+	private Set<Reward> rewards;
 	
 	private String name;
 	
@@ -101,6 +105,10 @@ public class User implements Serializable {
 	
 	public void removeClassStudent(Class gymClass) {
 		this.classesStudent.remove(gymClass);
+	}
+	
+	public void addReward(Reward reward) {
+		this.rewards.add(reward);
 	}
 
 	public Long getId() {

@@ -6,6 +6,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -75,6 +76,25 @@ public class RewardController {
 	public RewardOutputList listAll(HttpServletRequest req) {
 		User loggedUser = authorization.auth(userRepo, req, Permissions.ADM_PROF_STUDENT);
 		return rewardServices.listAll(loggedUser);
+	}
+	
+	
+	// ** Resgatar uma recompensa com fitcoins **
+	@ApiOperation(value = "Resgatar uma recompensa com fitcoins", notes = "Esta operação permite que um aluno compre um produto na loja de recompensas", authorizations = {
+			@Authorization(value = "JWT") })
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, response = StatusMessage.class, message = "A compra foi efetuada com sucesso"),
+			@ApiResponse(code = 400, response = StatusMessage.class, message = "A compra não foi efetuada. Ex: Saldo insuficiente"),			
+			@ApiResponse(code = 403, response = StatusMessage.class, message = "O token passado é inválido ou não possui a permissão para acessar este recurso. Este recurso só pode ser acessado por um aluno"),			
+			@ApiResponse(code = 500, message = "Houve algum erro no processamento da requisição") })	
+	@ApiImplicitParam(name = "Authorization", 
+	value = "Um Bearer Token deve ser passado no header 'Authorization'. \nEx: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0ZSJ9.7g5IV9YbjporuxChCooCAgHxIibCz-Yh3Yq3qIn0dsY'",  
+	required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
+	@PostMapping("/redeem/{id}")
+	@ResponseStatus(HttpStatus.OK)
+	public StatusMessage redeemReward(HttpServletRequest req, @PathVariable Long id) {
+		User loggedUser = authorization.auth(userRepo, req, Permissions.STUDENT);
+		return rewardServices.redeemReward(loggedUser, id);
 	}
 
 }

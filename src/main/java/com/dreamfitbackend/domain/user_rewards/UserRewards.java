@@ -36,6 +36,8 @@ public class UserRewards implements Serializable {
 	
 	@NotNull
 	private Boolean delivered;
+	
+	public UserRewards() {}
 
 	public UserRewards(User user, Reward reward, Boolean delivered) {
 		this.user = user;

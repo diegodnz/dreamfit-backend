@@ -21,6 +21,7 @@ import com.dreamfitbackend.domain.rewards.models.RewardOutputListElement;
 import com.dreamfitbackend.domain.rewards.models.RewardOutputRedeem;
 import com.dreamfitbackend.domain.user_rewards.UserRewards;
 import com.dreamfitbackend.domain.user_rewards.UserRewardsRepository;
+import com.dreamfitbackend.domain.user_rewards.models.UserRewardsInputDeliver;
 import com.dreamfitbackend.domain.usuario.User;
 import com.dreamfitbackend.domain.usuario.UserRepository;
 
@@ -88,8 +89,12 @@ public class RewardServices {
 			throw new MessageException("Cpf Inválido", HttpStatus.BAD_REQUEST);
 		}
 		
-		String sqlQuery = "SELECT r.id as id, COUNT(*) as quantity FROM rewards as r WHERE r.id in "
-						+ "(SELECT ur.reward_id FROM user_rewards as ur WHERE ur.user_id = " + user.getId() + " AND ur.delivered = false) GROUP BY r.id";
+		String sqlQuery = "SELECT r.id, COUNT(*) AS quantity"
+				       + " FROM rewards as r"
+				       + " INNER JOIN user_rewards as ur on ur.reward_id = r.id"
+				       + " WHERE ur.user_id = " + user.getId() + " AND ur.delivered = false"
+				       + " GROUP BY r.id";
+
 		List<RewardOutputRedeem> userRewards = em.createNativeQuery(sqlQuery, "RewardOutputRedeem").getResultList();
 		for (RewardOutputRedeem rewardOutput : userRewards) {
 			Reward reward = rewardRepo.getById(rewardOutput.getId());
@@ -97,7 +102,26 @@ public class RewardServices {
 		}
 		
 		return userRewards;
-		
-		
 	}
+	
+	public StatusMessage deliverReward(UserRewardsInputDeliver rewardDeliver) {
+		Reward reward = rewardRepo.getById(rewardDeliver.getReward_id());
+		if (reward == null) {
+			throw new MessageException("Produto não encontrado", HttpStatus.BAD_REQUEST);
+		}
+		
+		User user = userRepo.findByCpf(rewardDeliver.getCpf());
+		if (user == null) {
+			throw new MessageException("Cpf não encontrado", HttpStatus.BAD_REQUEST);
+		}
+		
+		UserRewards userReward = userRewardsRepo.findByUserAndReward(user.getId(), reward.getId());
+		if (userReward == null) {
+			throw new MessageException("Este usuário não comprou o produto ou já recebeu o mesmo", HttpStatus.BAD_REQUEST);
+		}
+		
+		userRewardsRepo.deliverByUserAndReward(user.getId(), reward.getId());
+		return new StatusMessage(HttpStatus.OK.value(), "Dados atualizados. Produto entregue");
+	}
+	
 }

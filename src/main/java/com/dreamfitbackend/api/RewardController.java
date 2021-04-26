@@ -25,6 +25,7 @@ import com.dreamfitbackend.domain.rewards.models.RewardOutputList;
 import com.dreamfitbackend.domain.rewards.models.RewardOutputListElement;
 import com.dreamfitbackend.domain.rewards.models.RewardOutputRedeem;
 import com.dreamfitbackend.domain.rewards.services.RewardServices;
+import com.dreamfitbackend.domain.user_rewards.models.UserRewardsInputDeliver;
 import com.dreamfitbackend.domain.usuario.User;
 import com.dreamfitbackend.domain.usuario.UserRepository;
 
@@ -107,7 +108,7 @@ public class RewardController {
 	@ApiOperation(value = "Listar as recompensas a serem entregues", notes = "Esta operação permite que a academia liste as recompensas que podem ser entregues a um aluno através do cpf", authorizations = {
 			@Authorization(value = "JWT") })
 	@ApiResponses(value = {
-			@ApiResponse(code = 200, response = RewardOutputListElement.class, responseContainer = "List", message = "Retorna uma lista com recompensas a serem entregues ao aluno"),
+			@ApiResponse(code = 200, response = RewardOutputRedeem.class, responseContainer = "List", message = "Retorna uma lista com recompensas a serem entregues ao aluno"),
 			@ApiResponse(code = 400, response = StatusMessage.class, message = "O cpf é inválido"),			
 			@ApiResponse(code = 403, response = StatusMessage.class, message = "O token passado é inválido ou não possui a permissão para acessar este recurso. Este recurso só pode ser acessado pela academia"),			
 			@ApiResponse(code = 500, message = "Houve algum erro no processamento da requisição") })	
@@ -120,4 +121,14 @@ public class RewardController {
 		authorization.auth(userRepo, req, Permissions.ADM);
 		return rewardServices.getRewardsByCpf(cpf);
 	}
+	
+	
+	// ** Indica a entrega de uma recompensa para o sistema **
+	@PostMapping("/deliver")
+	@ResponseStatus(HttpStatus.OK)
+	public StatusMessage deliverReward(HttpServletRequest req, @Valid @RequestBody UserRewardsInputDeliver rewardDeliver) {
+		authorization.auth(userRepo, req, Permissions.ADM);
+		return rewardServices.deliverReward(rewardDeliver);
+	}
+	
 }

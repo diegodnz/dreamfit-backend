@@ -17,6 +17,7 @@ import com.dreamfitbackend.configs.generalDtos.StatusMessage;
 import com.dreamfitbackend.configs.security.Auth;
 import com.dreamfitbackend.configs.security.Permissions;
 import com.dreamfitbackend.configs.storage.AmazonClient;
+import com.dreamfitbackend.domain.rewards.Reward;
 import com.dreamfitbackend.domain.usuario.User;
 import com.dreamfitbackend.domain.usuario.UserRepository;
 
@@ -50,7 +51,7 @@ public class FilesController {
 	@ApiImplicitParam(name = "Authorization", 
 	value = "Um Bearer Token deve ser passado no header 'Authorization'. \nEx: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0ZSJ9.7g5IV9YbjporuxChCooCAgHxIibCz-Yh3Yq3qIn0dsY'", 
 	required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
-    @PostMapping
+    @PostMapping("/users")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void setProfilePicture(@RequestPart(value = "image") MultipartFile image, @RequestPart(value = "uuid") String uuid, HttpServletRequest req) {
     	User loggedUser = auth.auth(userRepo, req, Permissions.ADM_PROF_STUDENT);
@@ -60,6 +61,29 @@ public class FilesController {
     	amazonClient.deleteFileFromS3Bucket(updateUser.getProfilePicture());
     	amazonClient.saveNewUrl(updateUser, fileUrl);  	
     }
+	
+	
+	// ** Atualizar foto de um produto da loja **
+	@ApiOperation(value = "Atualizar foto de um produto da loja", notes = "Esta operação permite que a academia atualize a foto de um produto da loja." , authorizations = {
+			@Authorization(value = "JWT") })
+	@ApiResponses(value = {
+			@ApiResponse(code = 204, message = "Foto atualizada com sucesso!"),
+			@ApiResponse(code = 400, response = StatusMessage.class, message = "O id do produto passado é inválido ou houve algum erro no upload da imagem"),
+			@ApiResponse(code = 403, response = StatusMessage.class, message = "O token passado é inválido ou não possui a permissão para acessar este recurso. Este recurso só pode ser acessado pela academia, trocando a foto do perfil de qualquer usuário, ou o próprio usuário trocando sua foto do perfil"),			
+			@ApiResponse(code = 500, message = "Houve algum erro no processamento da requisição") })	
+	@ApiImplicitParam(name = "Authorization", 
+	value = "Um Bearer Token deve ser passado no header 'Authorization'. \nEx: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0ZSJ9.7g5IV9YbjporuxChCooCAgHxIibCz-Yh3Yq3qIn0dsY'", 
+	required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
+	@PostMapping("/rewards")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void setRewardPicture(@RequestPart(value = "image") MultipartFile image, @RequestPart(value = "id") String id, HttpServletRequest req) {
+		auth.auth(userRepo, req, Permissions.ADM);
+		String fileName = id + System.currentTimeMillis();
+		Reward reward = amazonClient.checkReward(id);
+		String fileUrl = amazonClient.uploadFile(image, fileName);
+		amazonClient.deleteFileFromS3Bucket(reward.getPicture());
+		amazonClient.saveNewUrl(reward, fileUrl);
+	}
 
 	
 	// ** Remover foto do usuário **
@@ -67,19 +91,19 @@ public class FilesController {
 			@Authorization(value = "JWT") })
 	@ApiResponses(value = {
 			@ApiResponse(code = 204, message = "Foto removida com sucesso!"),
-			@ApiResponse(code = 400, response = StatusMessage.class, message = "O uuid passado no body é inválido ou houve algum erro no upload da imagem"),
+			@ApiResponse(code = 400, response = StatusMessage.class, message = "O uuid passado é inválido ou houve algum erro no upload da imagem"),
 			@ApiResponse(code = 403, response = StatusMessage.class, message = "O token passado é inválido ou não possui a permissão para acessar este recurso. Este recurso só pode ser acessado pela academia, removendo a foto do perfil de qualquer usuário, ou o próprio usuário removendo sua foto do perfil"),			
 			@ApiResponse(code = 500, message = "Houve algum erro no processamento da requisição") })	
 	@ApiImplicitParam(name = "Authorization", 
 	value = "Um Bearer Token deve ser passado no header 'Authorization'. \nEx: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0ZSJ9.7g5IV9YbjporuxChCooCAgHxIibCz-Yh3Yq3qIn0dsY'", 
 	required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
-    @DeleteMapping
+    @DeleteMapping("/users")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteFile(@RequestPart(value = "url") String fileUrl, @RequestPart(value = "uuid") String uuid, HttpServletRequest req) {
+    public void deleteProfilePicture(@RequestPart(value = "url") String fileUrl, @RequestPart(value = "uuid") String uuid, HttpServletRequest req) {
 		User loggedUser = auth.auth(userRepo, req, Permissions.ADM_PROF_STUDENT);
 		User updateUser = amazonClient.checkUser(loggedUser, uuid);
         amazonClient.deleteFileFromS3Bucket(fileUrl);
         amazonClient.saveNewUrl(updateUser, null);
-    }
+    }	
     
 }

@@ -21,6 +21,8 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.dreamfitbackend.configs.exceptions.MessageException;
+import com.dreamfitbackend.domain.rewards.Reward;
+import com.dreamfitbackend.domain.rewards.RewardRepository;
 import com.dreamfitbackend.domain.usuario.User;
 import com.dreamfitbackend.domain.usuario.UserRepository;
 import com.dreamfitbackend.domain.usuario.enums.Role;
@@ -41,6 +43,9 @@ public class AmazonClient {
     
     @Autowired
     private UserRepository userRepo;
+    
+    @Autowired
+    private RewardRepository rewardRepo;
     
     @PostConstruct
     private void initializeAmazon() {
@@ -66,6 +71,11 @@ public class AmazonClient {
     	userRepo.save(user);
     }
     
+    public void saveNewUrl(Reward reward, String url) {
+    	reward.setPicture(url);
+    	rewardRepo.save(reward);
+    }
+    
     public User checkUser(User loggedUser, String uuid) {
     	User updateUser = userRepo.findByUuid(uuid);
     	if (updateUser == null) {
@@ -75,6 +85,21 @@ public class AmazonClient {
     		throw new MessageException("Sem permissão", HttpStatus.FORBIDDEN);
     	}
     	return updateUser;
+    }
+    
+    public Reward checkReward(String id) {
+    	Long longId = null;
+    	try {
+    		longId = Long.valueOf(id);
+    	} catch (Exception e) {
+    		throw new MessageException("Id do produto inválido", HttpStatus.BAD_REQUEST);
+    	}
+    	
+    	Reward reward = rewardRepo.getById(longId);
+    	if (reward == null) {
+    		throw new MessageException("Id do produto inválido", HttpStatus.BAD_REQUEST);
+    	}
+    	return reward;
     }
     
     public String uploadFile(MultipartFile multipartFile, String fileName) {

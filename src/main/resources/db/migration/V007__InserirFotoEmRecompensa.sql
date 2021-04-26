@@ -1,0 +1,2 @@
+ALTER TABLE rewards
+ADD picture VARCHAR(255);

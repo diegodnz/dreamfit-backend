@@ -32,6 +32,8 @@ public class Reward implements Serializable {
 	
 	@NotNull
 	private Integer price;
+	
+	private String picture;
 
 	public Long getId() {
 		return id;
@@ -71,6 +73,14 @@ public class Reward implements Serializable {
 
 	public void setPrice(Integer price) {
 		this.price = price;
-	}	
+	}
+
+	public String getPicture() {
+		return picture;
+	}
+
+	public void setPicture(String picture) {
+		this.picture = picture;
+	}
 
 }

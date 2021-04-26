@@ -72,8 +72,9 @@ public class RewardController {
 	required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public void listAll(HttpServletRequest req) {
+	public RewardOutputList listAll(HttpServletRequest req) {
 		User loggedUser = authorization.auth(userRepo, req, Permissions.ADM_PROF_STUDENT);
+		return rewardServices.listAll(loggedUser);
 	}
 
 }

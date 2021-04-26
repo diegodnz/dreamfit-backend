@@ -3,6 +3,8 @@ package com.dreamfitbackend.domain.rewards;
 import java.io.Serializable;
 import java.util.Set;
 
+import javax.persistence.ColumnResult;
+import javax.persistence.ConstructorResult;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -10,10 +12,24 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import com.dreamfitbackend.domain.rewards.models.RewardOutputRedeem;
 import com.dreamfitbackend.domain.usuario.User;
+
+@SqlResultSetMapping(
+	    name = "RewardOutputRedeem",
+	    classes = @ConstructorResult(
+	        targetClass = RewardOutputRedeem.class,
+	        columns = {
+	            @ColumnResult(name = "id", type = Long.class),
+	            @ColumnResult(name = "quantity", type = Integer.class)
+	        }
+	    )
+	)
 
 @Entity
 @Table(name = "rewards")

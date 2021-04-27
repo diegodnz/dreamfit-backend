@@ -6,7 +6,7 @@ import javax.validation.constraints.NotNull;
 public class UserMeasuresInputUpdate {
 	
 	@NotBlank
-	private String uuid;
+	private String cpf;
 	
 	@NotNull
 	private Float weight;
@@ -23,12 +23,12 @@ public class UserMeasuresInputUpdate {
 	@NotNull
 	private Float belly_measurement;
 
-	public String getUuid() {
-		return uuid;
+	public String getCpf() {
+		return cpf;
 	}
 
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
 	}
 
 	public Float getWeight() {

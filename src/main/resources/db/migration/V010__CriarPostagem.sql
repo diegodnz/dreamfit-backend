@@ -5,7 +5,8 @@ CREATE TABLE posts(
 	picture VARCHAR(255),
 	likes INTEGER NOT NULL,
 	emotes INTEGER NOT NULL,
-	arms INTEGER NOT NULL
+	arms INTEGER NOT NULL,
+	time TIMESTAMP NOT NULL
 );
 
 CREATE TABLE post_interactions(

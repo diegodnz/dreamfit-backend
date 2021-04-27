@@ -1,10 +1,7 @@
 package com.dreamfitbackend.domain.usuario;
 
 import java.io.Serializable;
-import java.sql.Date;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Set;
 import java.util.UUID;
 
@@ -16,15 +13,12 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import com.dreamfitbackend.domain.gymclass.Class;
 import com.dreamfitbackend.domain.post.Post;
 import com.dreamfitbackend.domain.rewards.Reward;
 import com.dreamfitbackend.domain.user_measures.UserMeasures;
 import com.dreamfitbackend.domain.usuario.enums.Role;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 

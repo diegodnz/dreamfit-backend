@@ -1,6 +1,7 @@
 package com.dreamfitbackend.domain.post;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -35,6 +36,19 @@ public class Post implements Serializable {
 	private Integer emotes;
 	
 	private Integer arms;
+	
+	private LocalDateTime time;
+	
+	public Post() {}
+	
+	public Post(User user, String description) {
+		this.user = user;
+		this.description = description;
+		this.likes = 0;
+		this.emotes = 0;
+		this.arms = 0;
+		this.time = LocalDateTime.now();
+	}
 
 	public Long getId() {
 		return id;
@@ -90,6 +104,14 @@ public class Post implements Serializable {
 
 	public void setArms(Integer arms) {
 		this.arms = arms;
+	}
+
+	public LocalDateTime getTime() {
+		return time;
+	}
+
+	public void setTime(LocalDateTime time) {
+		this.time = time;
 	}
 
 	@Override

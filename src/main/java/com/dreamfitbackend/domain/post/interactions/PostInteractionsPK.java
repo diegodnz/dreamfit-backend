@@ -12,18 +12,42 @@ public class PostInteractionsPK implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private User user;
+	private long user;
 	
-	private Post post;
+	private long post;
 	
-	private Integer interaction;
+	private int interaction;
 
 	public PostInteractionsPK() {
 	}
 
-	public PostInteractionsPK(User user, Post post, Integer interaction) {
+	public PostInteractionsPK(long user, long post, int interaction) {
 		this.user = user;
 		this.post = post;
+		this.interaction = interaction;
+	}
+
+	public long getUser() {
+		return user;
+	}
+
+	public void setUser(long user) {
+		this.user = user;
+	}
+
+	public long getPost() {
+		return post;
+	}
+
+	public void setPost(long post) {
+		this.post = post;
+	}
+
+	public int getInteraction() {
+		return interaction;
+	}
+
+	public void setInteraction(int interaction) {
 		this.interaction = interaction;
 	}
 
@@ -31,9 +55,9 @@ public class PostInteractionsPK implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((interaction == null) ? 0 : interaction.hashCode());
-		result = prime * result + ((post == null) ? 0 : post.hashCode());
-		result = prime * result + ((user == null) ? 0 : user.hashCode());
+		result = prime * result + interaction;
+		result = prime * result + (int) (post ^ (post >>> 32));
+		result = prime * result + (int) (user ^ (user >>> 32));
 		return result;
 	}
 
@@ -46,22 +70,13 @@ public class PostInteractionsPK implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		PostInteractionsPK other = (PostInteractionsPK) obj;
-		if (interaction == null) {
-			if (other.interaction != null)
-				return false;
-		} else if (!interaction.equals(other.interaction))
+		if (interaction != other.interaction)
 			return false;
-		if (post == null) {
-			if (other.post != null)
-				return false;
-		} else if (!post.equals(other.post))
+		if (post != other.post)
 			return false;
-		if (user == null) {
-			if (other.user != null)
-				return false;
-		} else if (!user.equals(other.user))
+		if (user != other.user)
 			return false;
 		return true;
 	}
-	
+
 }

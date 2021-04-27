@@ -315,9 +315,9 @@ public class UserGeneralServices {
 	}
 	
 	public StatusMessage updateMeasures(UserMeasuresInputUpdate userMeasuresInput) {
-		User updateUser = userRepo.findByUuid(userMeasuresInput.getUuid());
+		User updateUser = userRepo.findByCpf(userMeasuresInput.getCpf());
 		if (updateUser == null) {
-			throw new MessageException("Usuário inválido", HttpStatus.BAD_REQUEST);
+			throw new MessageException("Cpf inválido", HttpStatus.BAD_REQUEST);
 		}
 		UserMeasures userMeasures = new UserMeasures(updateUser, LocalDateTime.now(), userMeasuresInput.getWeight(), userMeasuresInput.getArm_measurement(), 
 				userMeasuresInput.getLeg_measurement(), userMeasuresInput.getHip_measurement(), userMeasuresInput.getBelly_measurement());

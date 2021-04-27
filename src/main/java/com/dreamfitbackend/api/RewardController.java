@@ -21,6 +21,7 @@ import com.dreamfitbackend.configs.generalDtos.StatusMessage;
 import com.dreamfitbackend.configs.security.Auth;
 import com.dreamfitbackend.configs.security.Permissions;
 import com.dreamfitbackend.domain.rewards.models.RewardInputRegister;
+import com.dreamfitbackend.domain.rewards.models.RewardOutputId;
 import com.dreamfitbackend.domain.rewards.models.RewardOutputList;
 import com.dreamfitbackend.domain.rewards.models.RewardOutputListElement;
 import com.dreamfitbackend.domain.rewards.models.RewardOutputRedeem;
@@ -53,7 +54,7 @@ public class RewardController {
 	@ApiOperation(value = "Cadastrar um produto de recompensa", notes = "Esta operação permite que a academia cadastre um produto para ser comprado com fitcoins", authorizations = {
 			@Authorization(value = "JWT") })
 	@ApiResponses(value = {
-			@ApiResponse(code = 201, message = "Produto adicionado com sucesso. Sem retorno"),
+			@ApiResponse(code = 201, response = RewardOutputId.class, message = "Produto adicionado com sucesso. Retorna o id"),
 			@ApiResponse(code = 400, response = Problem.class, message = "Retornará caso um ou mais campos estejam nulos ou incorretos"),
 			@ApiResponse(code = 403, response = StatusMessage.class, message = "O token passado é inválido ou não possui a permissão para acessar este recurso. Este recurso só pode ser acessado pela academia"),			
 			@ApiResponse(code = 500, message = "Houve algum erro no processamento da requisição") })	
@@ -62,8 +63,8 @@ public class RewardController {
 	required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public void register(@Valid @RequestBody RewardInputRegister rewardInputRegister) {
-		rewardServices.register(rewardInputRegister);
+	public RewardOutputId register(@Valid @RequestBody RewardInputRegister rewardInputRegister) {
+		return rewardServices.register(rewardInputRegister);
 	}
 	
 	

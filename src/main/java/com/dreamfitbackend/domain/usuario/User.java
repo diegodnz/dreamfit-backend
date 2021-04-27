@@ -19,6 +19,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import com.dreamfitbackend.domain.gymclass.Class;
+import com.dreamfitbackend.domain.post.Post;
 import com.dreamfitbackend.domain.rewards.Reward;
 import com.dreamfitbackend.domain.user_measures.UserMeasures;
 import com.dreamfitbackend.domain.usuario.enums.Role;
@@ -45,6 +46,9 @@ public class User implements Serializable {
 	
 	@Column(unique = true)	
 	private String email;
+	
+	@OneToMany(mappedBy = "user")
+	private Set<Post> posts;
 	
 	@OneToMany(mappedBy = "user")
 	private Set<UserMeasures> userMeasures;

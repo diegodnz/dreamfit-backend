@@ -16,6 +16,7 @@ import com.dreamfitbackend.configs.generalDtos.StatusMessage;
 import com.dreamfitbackend.domain.rewards.Reward;
 import com.dreamfitbackend.domain.rewards.RewardRepository;
 import com.dreamfitbackend.domain.rewards.models.RewardInputRegister;
+import com.dreamfitbackend.domain.rewards.models.RewardOutputId;
 import com.dreamfitbackend.domain.rewards.models.RewardOutputList;
 import com.dreamfitbackend.domain.rewards.models.RewardOutputListElement;
 import com.dreamfitbackend.domain.rewards.models.RewardOutputRedeem;
@@ -45,10 +46,10 @@ public class RewardServices {
 	@Autowired
 	private EntityManager em;
 	
-	public void register(RewardInputRegister rewardInputRegister) {
+	public RewardOutputId register(RewardInputRegister rewardInputRegister) {
 		Reward reward = new Reward();
 		Mapper.copyPropertiesAllowNull(rewardInputRegister, reward);
-		rewardRepo.save(reward);
+		return new RewardOutputId(rewardRepo.save(reward).getId());
 	}
 	
 	public RewardOutputList listAll(User user) {

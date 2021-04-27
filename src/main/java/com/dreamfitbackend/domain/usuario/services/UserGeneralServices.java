@@ -166,7 +166,7 @@ public class UserGeneralServices {
 	            MimeMessageHelper helper = new MimeMessageHelper( mail );
 	            helper.setTo(email);
 	            helper.setSubject( "DreamFit - Recuperação de senha" );
-	            helper.setText(String.format("<h>Use este link para recuperar sua senha: <a href=%s>Clique aqui</a></h>", "https://dream-fit.vercel.app/users/recovery-token/" + token), true);
+	            helper.setText(String.format("<h>Use este link para recuperar sua senha: <a href=%s>Clique aqui</a></h>", "https://dream-fit.vercel.app/novasenha/?token=" + token), true);
 	            mailSender.send(mail);	
 	            userRepo.setResetToken(email, token);
 				return new StatusMessage(HttpStatus.OK.value(), "E-mail enviado com sucesso");

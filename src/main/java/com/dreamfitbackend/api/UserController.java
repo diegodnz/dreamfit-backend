@@ -36,6 +36,7 @@ import com.dreamfitbackend.domain.usuario.enums.Role;
 import com.dreamfitbackend.domain.usuario.models.EmailRecovery;
 import com.dreamfitbackend.domain.usuario.models.PasswordModify;
 import com.dreamfitbackend.domain.usuario.models.UserInputRegister;
+import com.dreamfitbackend.domain.usuario.models.UserInputUpdatePassword;
 import com.dreamfitbackend.domain.usuario.models.UserOutputComplete;
 import com.dreamfitbackend.domain.usuario.models.UserOutputList;
 import com.dreamfitbackend.domain.usuario.models.UserOutputPublic;
@@ -264,12 +265,12 @@ public class UserController {
 	
 	
 	// ** Atualizar medidas do aluno **
-	@ApiOperation(value = "Atualizar medidas do aluno", notes = "Esta operação permite que um professor atualize as medidas de um aluno", authorizations = {
+	@ApiOperation(value = "Atualizar medidas do aluno", notes = "Esta operação permite que um professor ou a academia atualize as medidas de um aluno", authorizations = {
 			@Authorization(value = "JWT") })
 	@ApiResponses(value = {
 			@ApiResponse(code = 204, response = StatusMessage.class, message = "As medidas foram atualizadas"),
 			@ApiResponse(code = 400, response = StatusMessage.class, message = "O uuid do usuário informado é inválido"),
-			@ApiResponse(code = 403, response = StatusMessage.class, message = "O token passado é inválido ou não possui a permissão para acessar este recurso. Este recurso só pode ser acessado por um professor."),
+			@ApiResponse(code = 403, response = StatusMessage.class, message = "O token passado é inválido ou não possui a permissão para acessar este recurso. Este recurso só pode ser acessado por um professor ou ADM."),
 			@ApiResponse(code = 500, message = "Houve algum erro no processamento da requisição") })	
 	@ApiImplicitParam(name = "Authorization",
 		value = "Um Bearer Token deve ser passado no header 'Authorization'. \nEx: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0ZSJ9.7g5IV9YbjporuxChCooCAgHxIibCz-Yh3Yq3qIn0dsY'",  
@@ -279,6 +280,24 @@ public class UserController {
 	public StatusMessage updateMeasures(HttpServletRequest req, @Valid @RequestBody UserMeasuresInputUpdate userMeasures) {
 		authorization.auth(userRepo, req, Permissions.ADM_PROF);
 		return userGeneralServices.updateMeasures(userMeasures);
+	}
+	
+	// ** Atualizar senha logado **
+	@ApiOperation(value = "Atualizar senha logado", notes = "Esta operação permite que um professor ou aluno atualize a sua senha enquanto está logado", authorizations = {
+			@Authorization(value = "JWT") })
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, response = StatusMessage.class, message = "A senha foi alterada"),
+			@ApiResponse(code = 400, response = StatusMessage.class, message = "A senha atual passada não está correta ou as senhas novas não coincidem (newPassword e confirmNewPassword)"),
+			@ApiResponse(code = 403, response = StatusMessage.class, message = "O token passado é inválido ou não possui a permissão para acessar este recurso. Este recurso só pode ser acessado por um usuário logado."),
+			@ApiResponse(code = 500, message = "Houve algum erro no processamento da requisição") })	
+	@ApiImplicitParam(name = "Authorization",
+		value = "Um Bearer Token deve ser passado no header 'Authorization'. \nEx: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0ZSJ9.7g5IV9YbjporuxChCooCAgHxIibCz-Yh3Yq3qIn0dsY'",  
+		required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
+	@PutMapping("/password")
+	@ResponseStatus(HttpStatus.OK)
+	public StatusMessage updatePassword(HttpServletRequest req, @Valid @RequestBody UserInputUpdatePassword updatePasswordInput) {
+		User loggedUser = authorization.auth(userRepo, req, Permissions.PROF_STUDENT);
+		return userGeneralServices.updatePassword(loggedUser, updatePasswordInput);
 	}
 	
 }

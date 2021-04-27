@@ -277,7 +277,7 @@ public class UserController {
 	@PutMapping("/measures")
 	@ResponseStatus(HttpStatus.OK)
 	public StatusMessage updateMeasures(HttpServletRequest req, @Valid @RequestBody UserMeasuresInputUpdate userMeasures) {
-		authorization.auth(userRepo, req, Permissions.PROF);
+		authorization.auth(userRepo, req, Permissions.ADM_PROF);
 		return userGeneralServices.updateMeasures(userMeasures);
 	}
 	

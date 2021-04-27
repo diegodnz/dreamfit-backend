@@ -33,6 +33,7 @@ import com.dreamfitbackend.domain.usuario.UserRepository;
 import com.dreamfitbackend.domain.usuario.enums.MeasureChange;
 import com.dreamfitbackend.domain.usuario.enums.Role;
 import com.dreamfitbackend.domain.usuario.models.UserInputRegister;
+import com.dreamfitbackend.domain.usuario.models.UserInputUpdatePassword;
 import com.dreamfitbackend.domain.usuario.models.UserOutputComplete;
 import com.dreamfitbackend.domain.usuario.models.UserOutputList;
 import com.dreamfitbackend.domain.usuario.models.UserOutputPublic;
@@ -323,6 +324,22 @@ public class UserGeneralServices {
 				userMeasuresInput.getLeg_measurement(), userMeasuresInput.getHip_measurement(), userMeasuresInput.getBelly_measurement());
 		userMeasuresRepo.save(userMeasures);
 		return new StatusMessage(HttpStatus.OK.value(), "Medidas atualizadas com sucesso!");
+	}
+	
+	public StatusMessage updatePassword(User loggedUser, UserInputUpdatePassword passwordInput) {
+		boolean matchCurrentPassword = BCrypt.checkpw(passwordInput.getCurrentPassword(), loggedUser.getPassword());
+		if (!matchCurrentPassword) {
+			throw new MessageException("Senha atual incorreta", HttpStatus.BAD_REQUEST);
+		}
+		
+		if (!passwordInput.getNewPassword().matches(passwordInput.getConfirmNewPassword())) {
+			throw new MessageException("Senhas não coincidem", HttpStatus.BAD_REQUEST);
+		}
+		
+		String encodedPassword = BCrypt.hashpw(passwordInput.getNewPassword(), BCrypt.gensalt());
+		loggedUser.setPassword(encodedPassword);
+		userRepo.save(loggedUser);
+		return new StatusMessage(HttpStatus.OK.value(), "Senha alterada!");
 	}
 
 }

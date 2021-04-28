@@ -2,6 +2,8 @@ package com.dreamfitbackend.domain.post;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -47,7 +49,7 @@ public class Post implements Serializable {
 		this.likes = 0;
 		this.emotes = 0;
 		this.arms = 0;
-		this.time = LocalDateTime.now();
+		this.time = ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")).toLocalDateTime();
 	}
 
 	public Long getId() {

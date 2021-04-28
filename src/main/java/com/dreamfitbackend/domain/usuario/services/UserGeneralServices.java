@@ -1,6 +1,8 @@
 package com.dreamfitbackend.domain.usuario.services;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -129,7 +131,7 @@ public class UserGeneralServices {
 		
 		UserMeasures userMeasures = new UserMeasures();	
 		userMeasures.setUser(newUser);
-		userMeasures.setDate(LocalDateTime.now());
+		userMeasures.setDate(ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")).toLocalDateTime());
 		userMeasures.setWeight(userInputRegister.getWeight());
 		userMeasures.setArm_measurement(userInputRegister.getArmMeasurement());
 		userMeasures.setLeg_measurement(userInputRegister.getLegMeasurement());
@@ -305,7 +307,8 @@ public class UserGeneralServices {
 		userProfile.setHipMeasurement(lastMeasure(userId, "Hip"));
 		userProfile.setBellyMeasurement(lastMeasure(userId, "Belly"));
 		
-		Class nextClass = classRepo.getNextClass(userId, LocalDateTime.now(), LocalDateTime.now().withHour(0).withMinute(0), LocalDateTime.now().withHour(0).withMinute(0).plusDays(1));
+		LocalDateTime nowBr = ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")).toLocalDateTime();
+		Class nextClass = classRepo.getNextClass(userId, nowBr, nowBr.withHour(0).withMinute(0), nowBr.withHour(0).withMinute(0).plusDays(1));
 		if (nextClass != null) {
 			ClassOutputResume nextClassOutput = new ClassOutputResume(nextClass.getType(), nextClass.getStartDate().toLocalTime(), nextClass.getEndDate().toLocalTime());
 			userProfile.setNextClass(nextClassOutput);
@@ -320,7 +323,7 @@ public class UserGeneralServices {
 		if (updateUser == null) {
 			throw new MessageException("Cpf inválido", HttpStatus.BAD_REQUEST);
 		}
-		UserMeasures userMeasures = new UserMeasures(updateUser, LocalDateTime.now(), userMeasuresInput.getWeight(), userMeasuresInput.getArm_measurement(), 
+		UserMeasures userMeasures = new UserMeasures(updateUser, ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")).toLocalDateTime(), userMeasuresInput.getWeight(), userMeasuresInput.getArm_measurement(), 
 				userMeasuresInput.getLeg_measurement(), userMeasuresInput.getHip_measurement(), userMeasuresInput.getBelly_measurement());
 		userMeasuresRepo.save(userMeasures);
 		return new StatusMessage(HttpStatus.OK.value(), "Medidas atualizadas com sucesso!");

@@ -38,9 +38,7 @@
 -----------------------------
 ### Administrador e Usuários
 
-Inicialmente o banco está populado, onde o super usuário é
-login:```33367174777``` senha:
-```12345678```
+Inicialmente o banco está populado, onde o super usuário seria a academia.
 
 -----------------------------
 ### Segurança

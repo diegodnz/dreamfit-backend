@@ -53,7 +53,7 @@ public class PostController {
 	@ApiOperation(value = "Listar os posts do feed", notes = "Esta operação permite que um usuário logado receba os posts do feed.", authorizations = {
 			@Authorization(value = "JWT") })
 	@ApiResponses(value = {
-			@ApiResponse(code = 200, response = Feed.class, responseContainer = "List", message = "Retorna os posts com base na página passada como parâmetro (São retornador no máximo 5 posts por página). "
+			@ApiResponse(code = 200, response = Feed.class, message = "Retorna os posts com base na página passada como parâmetro (São retornador no máximo 5 posts por página). "
 					+ "O campo 'userInteraction' pode ser 'Like', 'Emote' ou 'Arm'"),
 			@ApiResponse(code = 400, message = "Caso o parâmetro 'page' esteja incorreto (Deve ser inteiro)"),
 			@ApiResponse(code = 403, response = StatusMessage.class, message = "O token passado é inválido ou não possui a permissão para acessar este recurso. Este recurso só pode ser acessado por um usuário logado"),			

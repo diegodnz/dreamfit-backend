@@ -38,7 +38,7 @@
 -----------------------------
 ### Administrador e Usuários
 
-Inicialmente o banco está populado, onde o super usuário seria a academia.
+Inicialmente o banco foi populado por motivo de testes. Na entrega do projeto, as credenciais foram trocadas diretamente com o banco de dados
 
 -----------------------------
 ### Segurança

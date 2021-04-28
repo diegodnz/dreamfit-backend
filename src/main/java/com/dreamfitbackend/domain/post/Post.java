@@ -86,26 +86,38 @@ public class Post implements Serializable {
 		return likes;
 	}
 
-	public void setLikes(Integer likes) {
-		this.likes = likes;
+	public void addLike() {
+		this.likes += 1;
+	}
+	
+	public void subLike() {
+		this.likes -= 1;
 	}
 
 	public Integer getEmotes() {
 		return emotes;
 	}
 
-	public void setEmotes(Integer emotes) {
-		this.emotes = emotes;
+	public void addEmote() {
+		this.emotes += 1;
 	}
-
+	
+	public void subEmote() {
+		this.emotes -= 1;
+	}
+	
 	public Integer getArms() {
 		return arms;
 	}
 
-	public void setArms(Integer arms) {
-		this.arms = arms;
+	public void addArm() {
+		this.arms += 1;
 	}
-
+	
+	public void subArm() {
+		this.arms -= 1;
+	}
+	
 	public LocalDateTime getTime() {
 		return time;
 	}
@@ -118,9 +130,9 @@ public class Post implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + (int) (id ^ (id >>> 32));
 		return result;
-	}
+	}	
 
 	@Override
 	public boolean equals(Object obj) {
@@ -131,10 +143,7 @@ public class Post implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Post other = (Post) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
+		if (id != other.id)
 			return false;
 		return true;
 	}

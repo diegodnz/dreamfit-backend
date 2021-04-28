@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 	
-	@Query(value = "SELECT * FROM posts LIMIT :limit", nativeQuery = true)
+	@Query(value = "SELECT * FROM posts ORDER BY time DESC LIMIT :limit", nativeQuery = true)
 	List<Post> getWithLimit(@Param("limit") int limit);
 	
 }

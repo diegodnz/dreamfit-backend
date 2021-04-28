@@ -12,52 +12,40 @@ public class PostInteractionsPK implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private long user;
+	private long user_id;
 	
-	private long post;
-	
-	private int interaction;
+	private long post_id;
 
 	public PostInteractionsPK() {
 	}
 
-	public PostInteractionsPK(long user, long post, int interaction) {
-		this.user = user;
-		this.post = post;
-		this.interaction = interaction;
+	public PostInteractionsPK(long user_id, int post_id) {
+		this.user_id = user_id;
+		this.post_id = post_id;
+	}
+	
+	public long getUser_id() {
+		return user_id;
 	}
 
-	public long getUser() {
-		return user;
+	public void setUser_id(long user_id) {
+		this.user_id = user_id;
 	}
 
-	public void setUser(long user) {
-		this.user = user;
+	public long getPost_id() {
+		return post_id;
 	}
 
-	public long getPost() {
-		return post;
-	}
-
-	public void setPost(long post) {
-		this.post = post;
-	}
-
-	public int getInteraction() {
-		return interaction;
-	}
-
-	public void setInteraction(int interaction) {
-		this.interaction = interaction;
+	public void setPost_id(long post_id) {
+		this.post_id = post_id;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + interaction;
-		result = prime * result + (int) (post ^ (post >>> 32));
-		result = prime * result + (int) (user ^ (user >>> 32));
+		result = prime * result + (int) (post_id ^ (post_id >>> 32));
+		result = prime * result + (int) (user_id ^ (user_id >>> 32));
 		return result;
 	}
 
@@ -70,11 +58,9 @@ public class PostInteractionsPK implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		PostInteractionsPK other = (PostInteractionsPK) obj;
-		if (interaction != other.interaction)
+		if (post_id != other.post_id)
 			return false;
-		if (post != other.post)
-			return false;
-		if (user != other.user)
+		if (user_id != other.user_id)
 			return false;
 		return true;
 	}

@@ -18,36 +18,35 @@ public class PostInteractions implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	private User user;
+	private long user_id;
 	
 	@Id
-	private Post post;
+	private long post_id;
 	
-	@Id
 	private Integer interaction;
 	
 	public PostInteractions() {}
 
-	public PostInteractions(User user, Post post, Integer interaction) {
-		this.user = user;
-		this.post = post;
+	public PostInteractions(long user_id, long post_id, Integer interaction) {
+		this.user_id = user_id;
+		this.post_id = post_id;
 		this.interaction = interaction;
 	}
 
-	public User getUser() {
-		return user;
+	public long getUser_id() {
+		return user_id;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setUser_id(long user_id) {
+		this.user_id = user_id;
 	}
 
-	public Post getPost() {
-		return post;
+	public long getPost_id() {
+		return post_id;
 	}
 
-	public void setPost(Post post) {
-		this.post = post;
+	public void setPost_id(long post_id) {
+		this.post_id = post_id;
 	}
 
 	public Integer getInteraction() {
@@ -63,8 +62,8 @@ public class PostInteractions implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((interaction == null) ? 0 : interaction.hashCode());
-		result = prime * result + ((post == null) ? 0 : post.hashCode());
-		result = prime * result + ((user == null) ? 0 : user.hashCode());
+		result = prime * result + (int) (post_id ^ (post_id >>> 32));
+		result = prime * result + (int) (user_id ^ (user_id >>> 32));
 		return result;
 	}
 
@@ -82,15 +81,9 @@ public class PostInteractions implements Serializable {
 				return false;
 		} else if (!interaction.equals(other.interaction))
 			return false;
-		if (post == null) {
-			if (other.post != null)
-				return false;
-		} else if (!post.equals(other.post))
+		if (post_id != other.post_id)
 			return false;
-		if (user == null) {
-			if (other.user != null)
-				return false;
-		} else if (!user.equals(other.user))
+		if (user_id != other.user_id)
 			return false;
 		return true;
 	}

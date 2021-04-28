@@ -2,6 +2,7 @@ package com.dreamfitbackend.domain.post.models;
 
 import java.time.LocalDateTime;
 
+import com.dreamfitbackend.domain.post.interactions.Interaction;
 import com.dreamfitbackend.domain.usuario.models.UserOutputName;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -15,27 +16,31 @@ public class PostOutputListElement {
 	private UserOutputName user;
 	
 	@ApiModelProperty(position = 3)
-	private String description;
+	private Interaction userAction;
 	
 	@ApiModelProperty(position = 4)
-	private String picture;
+	private String description;
 	
 	@ApiModelProperty(position = 5)
-	private Integer likes;
+	private String picture;
 	
 	@ApiModelProperty(position = 6)
-	private Integer emotes;
+	private Integer likes;
 	
 	@ApiModelProperty(position = 7)
-	private Integer arms;
+	private Integer emotes;
 	
 	@ApiModelProperty(position = 8)
+	private Integer arms;
+	
+	@ApiModelProperty(position = 9)
 	private LocalDateTime time;
 
-	public PostOutputListElement(Long id, UserOutputName user, String description, String picture, Integer likes,
+	public PostOutputListElement(Long id, UserOutputName user, Interaction userAction, String description, String picture, Integer likes,
 			Integer emotes, Integer arms, LocalDateTime time) {
 		this.id = id;
 		this.user = user;
+		this.userAction = userAction;
 		this.description = description;
 		this.picture = picture;
 		this.likes = likes;
@@ -58,6 +63,17 @@ public class PostOutputListElement {
 
 	public void setUser(UserOutputName user) {
 		this.user = user;
+	}
+
+	public String getUserAction() {
+		if (userAction != null) {
+			return userAction.getDescricao();
+		}
+		return null;
+	}
+
+	public void setUserAction(Interaction userAction) {
+		this.userAction = userAction;
 	}
 
 	public String getDescription() {

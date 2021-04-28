@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dreamfitbackend.configs.exceptions.FieldsException;
 import com.dreamfitbackend.configs.exceptions.Problem;
 import com.dreamfitbackend.configs.generalDtos.StatusMessage;
 import com.dreamfitbackend.configs.security.Auth;
@@ -124,7 +125,17 @@ public class RewardController {
 	}
 	
 	
-	// ** Indica a entrega de uma recompensa para o sistema **
+	// ** Indica que uma recompensa foi entregue para um aluno **
+	@ApiOperation(value = "Indica que uma recompensa foi entregue para um aluno", notes = "Esta operação permite que a academia registre no sistema que entregou uma recompensa à um aluno", authorizations = {
+			@Authorization(value = "JWT") })
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, response = StatusMessage.class, message = "O registro foi feito com suceesso"),
+			@ApiResponse(code = 400, response = FieldsException.class, message = "O id da recompensa ou o cpf do aluno é inválido"),			
+			@ApiResponse(code = 403, response = StatusMessage.class, message = "O token passado é inválido ou não possui a permissão para acessar este recurso. Este recurso só pode ser acessado pela academia"),			
+			@ApiResponse(code = 500, message = "Houve algum erro no processamento da requisição") })	
+	@ApiImplicitParam(name = "Authorization", 
+	value = "Um Bearer Token deve ser passado no header 'Authorization'. \nEx: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0ZSJ9.7g5IV9YbjporuxChCooCAgHxIibCz-Yh3Yq3qIn0dsY'",  
+	required = true, allowEmptyValue = false, paramType = "header", example = "Bearer access_token")
 	@PostMapping("/deliver")
 	@ResponseStatus(HttpStatus.OK)
 	public StatusMessage deliverReward(HttpServletRequest req, @Valid @RequestBody UserRewardsInputDeliver rewardDeliver) {
